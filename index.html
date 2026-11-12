@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#030714">
+<title>Postly Engines · Custom POS & business software</title>
+<meta name="description" content="Postly Engines builds custom POS systems, business software and websites for restaurants, cafés, pharmacies, salons, grocery stores and more across Pakistan. Book a demo.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Postly Engines">
+<meta property="og:title" content="Postly Engines · One engine. Every business.">
+<meta property="og:description" content="Custom POS, business software and websites for businesses across Pakistan. Book a demo on WhatsApp.">
+<meta property="og:image" content="og-image.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="og-image.png">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a full-bleed cinematic engine test-run up top, then a "spec sheet" of modules on deep navy, every section framed like an engineering drawing. */
+:root{
+  --void:#030714;      /* page ground, deepest space */
+  --navy:#0B1433;      /* raised panels */
+  --navy-2:#081028;
+  --cyan:#00E5FF;      /* electric accent */
+  --ice:#6AF2FF;       /* highlight */
+  --text:#F2F6FF;
+  --muted:rgba(242,246,255,.66);
+  --faint:rgba(242,246,255,.42);
+  --line:rgba(242,246,255,.12);
+  --line-c:rgba(0,229,255,.32);
+  --f-display:"Unbounded","Inter",system-ui,sans-serif;
+  --f-body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --gut-l:max(16px,env(safe-area-inset-left,0px));
+  --gut-r:max(16px,env(safe-area-inset-right,0px));
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{background:var(--void);scroll-behavior:smooth}
+body{margin:0;background:var(--void);color:var(--text);font-family:var(--f-body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1160px;margin:0 auto;padding-left:var(--gut-l);padding-right:var(--gut-r)}
+.mono{font-family:var(--f-mono)}
+h1,h2,h3{font-family:var(--f-display);font-weight:800;letter-spacing:-.02em;line-height:1.05;margin:0;text-wrap:balance}
+p{margin:0}
+
+/* ---------- HERO ---------- */
+.hero{position:relative;height:100svh;min-height:600px;max-height:1100px;overflow:hidden;background:radial-gradient(120% 80% at 50% 40%,#0A1538 0%,var(--void) 70%)}
+#stage{position:absolute;inset:0;width:100%;height:100%;display:block}
+.flash{position:absolute;inset:0;pointer-events:none;opacity:0;background:radial-gradient(60% 50% at 50% 45%,rgba(230,253,255,.95),rgba(0,229,255,.5) 40%,transparent 75%)}
+.scrim{position:absolute;inset:0;pointer-events:none;transition:opacity 1s;background:linear-gradient(180deg,rgba(3,7,20,.75) 0%,transparent 18%,transparent 55%,rgba(3,7,20,.92) 100%)}
+.scan{position:absolute;inset:0;pointer-events:none;opacity:.5;background:repeating-linear-gradient(180deg,rgba(242,246,255,.025) 0 1px,transparent 1px 3px)}
+.frame{position:absolute;inset:calc(12px + env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 12px max(12px,env(safe-area-inset-left,0px));pointer-events:none;
+  background:
+   linear-gradient(var(--cyan),var(--cyan)) top left/18px 1px no-repeat,linear-gradient(var(--cyan),var(--cyan)) top left/1px 18px no-repeat,
+   linear-gradient(var(--cyan),var(--cyan)) top right/18px 1px no-repeat,linear-gradient(var(--cyan),var(--cyan)) top right/1px 18px no-repeat,
+   linear-gradient(var(--cyan),var(--cyan)) bottom left/18px 1px no-repeat,linear-gradient(var(--cyan),var(--cyan)) bottom left/1px 18px no-repeat,
+   linear-gradient(var(--cyan),var(--cyan)) bottom right/18px 1px no-repeat,linear-gradient(var(--cyan),var(--cyan)) bottom right/1px 18px no-repeat;opacity:.6}
+
+.topbar{position:absolute;top:0;left:0;right:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:calc(22px + env(safe-area-inset-top,0px)) calc(var(--gut-r) + 12px) 0 calc(var(--gut-l) + 12px)}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand svg{width:34px;height:34px;flex:none}
+.brand b{font-family:var(--f-display);font-weight:800;font-size:15px;letter-spacing:.06em;display:block;line-height:1}
+.brand small{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.42em;color:var(--cyan);display:block;margin-top:4px}
+.ctl{display:flex;gap:8px;align-items:center}
+.btn-ghost{font:600 11px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--text);background:rgba(3,7,20,.45);border:1px solid var(--line-c);border-radius:999px;padding:10px 14px;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.btn-ghost:hover{border-color:var(--cyan);color:var(--ice)}
+
+.hud{position:absolute;z-index:4;top:calc(78px + env(safe-area-inset-top,0px));right:calc(var(--gut-r) + 12px);text-align:right;font:500 10.5px/1.7 var(--f-mono);letter-spacing:.12em;color:var(--faint);text-transform:uppercase;font-variant-numeric:tabular-nums;transition:opacity .6s}
+.hud b{color:var(--ice);font-weight:600}
+.hud .live{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan);margin-right:6px;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:.2}}
+
+.labels{position:absolute;inset:0;pointer-events:none;z-index:3}
+.tag{position:absolute;left:0;top:0;opacity:0;transition:opacity .35s;white-space:nowrap;will-change:transform}
+.tag .in{transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;gap:6px}
+.tag .chip{font:600 10.5px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--void);background:var(--cyan);padding:6px 9px;border-radius:3px;box-shadow:0 0 18px rgba(0,229,255,.55)}
+.tag .chip i{font-style:normal;opacity:.6;margin-right:6px}
+.tag .read{font:500 10.5px/1 var(--f-mono);color:var(--ice);background:rgba(3,7,20,.7);border:1px solid var(--line-c);padding:6px 8px;border-radius:3px;letter-spacing:.04em}
+.tag .stem{width:1px;height:22px;background:linear-gradient(var(--cyan),transparent)}
+.tag.tmod .chip{background:transparent;color:var(--ice);border:1px solid var(--cyan);box-shadow:none}
+.tag.slim .read{display:none}
+
+.caption{position:absolute;z-index:4;left:calc(var(--gut-l) + 12px);right:calc(var(--gut-r) + 12px);bottom:58px;display:flex;gap:16px;align-items:flex-end;transition:opacity .6s,transform .6s}
+.caption .n{font:800 52px/0.8 var(--f-display);color:transparent;-webkit-text-stroke:1px var(--cyan);flex:none}
+.caption b{font:600 11px/1 var(--f-mono);letter-spacing:.24em;text-transform:uppercase;color:var(--cyan);display:block;margin-bottom:8px}
+.caption p{font:600 clamp(17px,2.4vw,24px)/1.25 var(--f-display);letter-spacing:-.01em;max-width:30ch}
+.caption.swap{animation:swap .5s ease}
+@keyframes swap{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.timeline{position:absolute;z-index:4;left:calc(var(--gut-l) + 12px);right:calc(var(--gut-r) + 12px);bottom:30px;height:14px;transition:opacity .6s}
+.timeline .track{position:absolute;left:0;right:0;top:6px;height:1px;background:var(--line)}
+.timeline .fill{position:absolute;left:0;top:6px;height:1px;background:var(--cyan);box-shadow:0 0 8px var(--cyan);width:0}
+.timeline .tick{position:absolute;top:2px;width:1px;height:9px;background:var(--faint)}
+
+.final{position:absolute;z-index:4;left:0;right:0;bottom:0;padding:0 calc(var(--gut-r) + 12px) calc(40px + env(safe-area-inset-bottom,0px)) calc(var(--gut-l) + 12px);opacity:0;transform:translateY(24px);transition:opacity 1s ease,transform 1s ease;pointer-events:none}
+.final.on{opacity:1;transform:none;pointer-events:auto}
+.final .k{font:600 11px/1 var(--f-mono);letter-spacing:.3em;text-transform:uppercase;color:var(--cyan)}
+.final h1{font-size:clamp(40px,8.6vw,112px);margin-top:14px;max-width:12ch}
+.final h1 em{font-style:normal;color:var(--cyan);text-shadow:0 0 40px rgba(0,229,255,.45)}
+.final .sub{margin-top:16px;color:var(--muted);font-size:clamp(15px,1.6vw,18px);max-width:52ch}
+.final .ur{text-align:left;font-family:"Noto Nastaliq Urdu","Jameel Noori Nastaleeq",serif;direction:rtl;color:var(--ice);font-size:18px;margin-top:8px;opacity:.85}
+.ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.btn{display:inline-flex;align-items:center;gap:10px;font:600 14px/1 var(--f-body);text-decoration:none;padding:15px 20px;border-radius:999px;border:1px solid var(--cyan);color:var(--void);background:var(--cyan);box-shadow:0 0 30px rgba(0,229,255,.35);transition:transform .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 0 44px rgba(0,229,255,.55)}
+.btn.alt{background:rgba(3,7,20,.5);color:var(--text);border-color:var(--line-c);box-shadow:none}
+.btn.alt:hover{border-color:var(--cyan)}
+
+.nogl .fallback{display:grid}
+.fallback{display:none;position:absolute;inset:0;place-items:center;padding-bottom:30vh}
+.fallback svg{width:min(42vw,220px);height:auto;filter:drop-shadow(0 0 30px rgba(0,229,255,.5))}
+
+/* ---------- SECTIONS ---------- */
+section.s{position:relative;padding-block:clamp(72px,10vw,140px);border-top:1px solid var(--line)}
+.eyebrow{font:600 11px/1 var(--f-mono);letter-spacing:.28em;text-transform:uppercase;color:var(--cyan);display:flex;align-items:center;gap:12px}
+.eyebrow:before{content:"";width:28px;height:1px;background:var(--cyan)}
+.s h2{font-size:clamp(32px,5.4vw,68px);margin-top:20px;max-width:18ch}
+.s h2 em{font-style:normal;color:var(--cyan)}
+.lede{color:var(--muted);font-size:clamp(16px,1.7vw,19px);max-width:60ch;margin-top:20px}
+.grid-bg{position:absolute;inset:0;pointer-events:none;z-index:-1;background-image:linear-gradient(rgba(242,246,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(242,246,255,.035) 1px,transparent 1px);background-size:44px 44px;-webkit-mask-image:radial-gradient(80% 70% at 50% 40%,#000,transparent);mask-image:radial-gradient(80% 70% at 50% 40%,#000,transparent)}
+section.s{isolation:isolate}
+
+/* manifesto */
+.manifesto{display:grid;grid-template-columns:1.25fr .75fr;gap:clamp(32px,6vw,90px);align-items:center}
+.manifesto .big{font:600 clamp(24px,3.4vw,42px)/1.22 var(--f-display);letter-spacing:-.02em}
+.manifesto .big span{color:var(--faint)}
+.manifesto .big em{font-style:normal;color:var(--cyan)}
+.mark-live{position:relative;aspect-ratio:1;max-width:340px;width:100%;justify-self:center}
+.mark-live svg{width:100%;height:100%;position:relative;z-index:1}
+.mark-live:before{content:"";position:absolute;inset:8%;border-radius:50%;border:1px dashed var(--line-c);animation:spin 30s linear infinite}
+.mark-live:after{content:"";position:absolute;inset:22%;border-radius:50%;background:radial-gradient(circle,rgba(0,229,255,.18),transparent 70%)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.specs{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:clamp(40px,6vw,72px);border:1px solid var(--line);border-radius:4px}
+.specs div{padding:22px 22px 20px;border-left:1px solid var(--line);min-width:0}
+.specs div:first-child{border-left:0}
+.specs b{display:block;font:800 clamp(26px,3.6vw,40px)/1 var(--f-display);color:var(--ice);letter-spacing:-.02em}
+.specs span{display:block;margin-top:10px;color:var(--muted);font-size:14px}
+
+/* modules */
+.mods{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:clamp(36px,5vw,60px)}
+.mod{position:relative;padding:28px;border:1px solid var(--line);border-radius:6px;background:linear-gradient(180deg,rgba(11,20,51,.9),rgba(8,16,40,.6));overflow:hidden;min-width:0;transition:border-color .3s}
+.mod:hover{border-color:var(--line-c)}
+.mod .code{display:flex;justify-content:space-between;font:600 11px/1 var(--f-mono);letter-spacing:.2em;color:var(--faint)}
+.mod .code span:first-child{color:var(--cyan)}
+.mod h3{font-size:clamp(22px,2.4vw,28px);margin-top:42px}
+.mod p{color:var(--muted);margin-top:12px;max-width:44ch}
+.mod ul{list-style:none;padding:0;margin:20px 0 0;display:flex;flex-wrap:wrap;gap:8px}
+.mod li{font:500 12px/1 var(--f-mono);border:1px solid var(--line);border-radius:999px;padding:8px 11px;color:var(--text)}
+.mod .glyph{position:absolute;right:-20px;top:-20px;width:150px;height:150px;opacity:.5}
+.mod .glyph *{fill:none;stroke:var(--cyan);stroke-width:1}
+
+/* studio pipeline */
+.pipe{position:relative;margin-top:clamp(40px,6vw,72px);display:grid;grid-template-columns:repeat(7,1fr);gap:10px}
+.pipe:before{content:"";position:absolute;left:3%;right:3%;top:23px;height:1px;background:linear-gradient(90deg,var(--line-c),var(--cyan),var(--line-c))}
+.pipe .runner{position:absolute;top:19px;left:3%;width:9px;height:9px;border-radius:50%;background:var(--ice);box-shadow:0 0 14px 3px var(--cyan);animation:run 7s cubic-bezier(.6,0,.4,1) infinite}
+@keyframes run{from{left:3%}to{left:calc(97% - 9px)}}
+.st{position:relative;min-width:0}
+.st .dot{width:46px;height:46px;border-radius:50%;border:1px solid var(--cyan);background:var(--void);display:grid;place-items:center;font:600 13px/1 var(--f-mono);color:var(--cyan);position:relative;z-index:1}
+.st:nth-child(even) .dot{background:var(--cyan);color:var(--void)}
+.st b{display:block;margin-top:18px;font:600 16px/1.2 var(--f-display)}
+.st span{display:block;margin-top:8px;color:var(--muted);font-size:13.5px;line-height:1.5}
+.note{margin-top:40px;display:flex;flex-wrap:wrap;gap:12px 28px;color:var(--faint);font:500 12px/1.6 var(--f-mono);letter-spacing:.06em}
+.note b{color:var(--ice);font-weight:600}
+
+/* four stroke */
+.cycle{display:grid;grid-template-columns:300px 1fr;gap:clamp(32px,6vw,90px);align-items:center;margin-top:clamp(36px,5vw,60px)}
+.cyl{width:100%;max-width:300px;justify-self:center}
+.cyl .pist{animation:stroke 8s infinite}
+@keyframes stroke{0%,100%{transform:translateY(0)}12%,25%{transform:translateY(120px)}37%,50%{transform:translateY(0)}62%,75%{transform:translateY(120px)}87%{transform:translateY(0)}}
+.cyl .spk{animation:spk 8s infinite;transform-origin:150px 40px}
+@keyframes spk{0%,44%,56%,100%{opacity:.15}50%{opacity:1}}
+.strokes{list-style:none;margin:0;padding:0;display:grid;gap:0;border-top:1px solid var(--line)}
+.strokes li{display:grid;grid-template-columns:70px 1fr;gap:16px;padding:22px 0;border-bottom:1px solid var(--line);animation:hl 8s infinite}
+.strokes li:nth-child(2){animation-delay:2s}.strokes li:nth-child(3){animation-delay:4s}.strokes li:nth-child(4){animation-delay:6s}
+@keyframes hl{0%,25%{--a:1}26%,100%{--a:0}}
+.strokes li{opacity:calc(.45 + var(--a,0)*.55);transition:opacity .4s}
+@property --a{syntax:"<number>";inherits:true;initial-value:0}
+.strokes .no{font:800 30px/1 var(--f-display);color:transparent;-webkit-text-stroke:1px var(--cyan)}
+.strokes b{font:600 12px/1 var(--f-mono);letter-spacing:.22em;text-transform:uppercase;color:var(--cyan)}
+.strokes h3{font-size:21px;margin-top:8px}
+.strokes p{color:var(--muted);margin-top:6px;max-width:52ch}
+
+/* fleet marquee */
+.fleet{overflow:hidden;padding-block:clamp(56px,8vw,100px);border-top:1px solid var(--line)}
+.row{display:flex;gap:28px;width:max-content;animation:mq 40s linear infinite}
+.row.r2{animation-direction:reverse;margin-top:14px}
+.row span{font:800 clamp(34px,6vw,80px)/1.1 var(--f-display);letter-spacing:-.02em;white-space:nowrap;color:transparent;-webkit-text-stroke:1px rgba(242,246,255,.35)}
+.row span.on{color:var(--cyan);-webkit-text-stroke:0;text-shadow:0 0 30px rgba(0,229,255,.35)}
+.row i{font-style:normal;color:var(--cyan);font:400 clamp(24px,4vw,50px)/1.5 var(--f-display);opacity:.6}
+@keyframes mq{to{transform:translateX(-50%)}}
+.fleet .cap{margin-top:36px}
+
+/* proof */
+.proof{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,6vw,80px);align-items:end}
+.dyno{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.dyno div{padding:24px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-width:0}
+.dyno div:nth-child(2n){border-right:0}
+.dyno div:nth-child(n+3){border-bottom:0}
+.dyno b{display:block;font:800 clamp(30px,4vw,48px)/1 var(--f-display);color:var(--ice);font-variant-numeric:tabular-nums}
+.dyno span{display:block;margin-top:10px;color:var(--muted);font-size:14px}
+.status{display:inline-flex;align-items:center;gap:8px;font:600 11px/1 var(--f-mono);letter-spacing:.2em;text-transform:uppercase;color:var(--ice);border:1px solid var(--line-c);border-radius:999px;padding:8px 12px;margin-top:24px}
+.status:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan);animation:blink 1.2s steps(2) infinite}
+
+/* compare */
+.cmp{margin-top:clamp(36px,5vw,60px);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.cmp .r{display:grid;grid-template-columns:1fr 1.3fr;border-top:1px solid var(--line)}
+.cmp .r:first-child{border-top:0}
+.cmp .r > div{padding:18px 22px;min-width:0}
+.cmp .r > div:first-child{color:var(--faint)}
+.cmp .r > div:last-child{background:rgba(0,229,255,.05);border-left:1px solid var(--line-c)}
+.cmp .h > div{font:600 11px/1 var(--f-mono);letter-spacing:.2em;text-transform:uppercase;padding-block:16px}
+.cmp .h > div:last-child{color:var(--void);background:var(--cyan)}
+.cmp small{display:block;font:500 10.5px/1 var(--f-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--faint);margin-bottom:8px}
+.cmp .r > div:last-child small{color:var(--cyan)}
+
+/* start */
+.start{text-align:left;position:relative}
+.start h2{font-size:clamp(44px,9vw,128px);max-width:10ch}
+.contact span a{color:var(--ice);text-underline-offset:3px}
+.contact{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:48px}
+.contact div{border:1px solid var(--line);border-radius:6px;padding:20px 22px;min-width:0}
+.contact small{display:block;font:600 10.5px/1 var(--f-mono);letter-spacing:.22em;text-transform:uppercase;color:var(--cyan)}
+.contact b{display:block;margin-top:10px;font:600 18px/1.3 var(--f-display);overflow-wrap:anywhere}
+.contact span{display:block;color:var(--muted);font-size:14px;margin-top:6px}
+
+footer{border-top:1px solid var(--line);padding-block:28px calc(28px + env(safe-area-inset-bottom,0px))}
+footer .wrap{display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:space-between;align-items:center;font:500 11px/1.6 var(--f-mono);letter-spacing:.12em;color:var(--faint);text-transform:uppercase}
+
+@media (max-width:860px){
+  .manifesto,.proof,.cycle{grid-template-columns:1fr}
+  .mark-live{max-width:220px;order:-1;justify-self:start}
+  .mods{grid-template-columns:1fr}
+  .pipe{grid-template-columns:1fr;gap:0}
+  .pipe:before{left:23px;right:auto;top:10px;bottom:10px;width:1px;height:auto;background:linear-gradient(180deg,var(--line-c),var(--cyan),var(--line-c))}
+  .pipe .runner{left:19px;top:0;animation:runv 7s cubic-bezier(.6,0,.4,1) infinite}
+  @keyframes runv{from{top:0}to{top:calc(100% - 9px)}}
+  .st{display:grid;grid-template-columns:46px 1fr;gap:4px 18px;padding-bottom:22px}
+  .st b{margin-top:4px}.st span{grid-column:2;margin-top:2px}
+  .cyl{max-width:200px;justify-self:start}
+  .contact{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  .specs{grid-template-columns:1fr}
+  .specs div{border-left:0;border-top:1px solid var(--line)}
+  .specs div:first-child{border-top:0}
+  .cmp .r{grid-template-columns:1fr}
+  .cmp .r > div:last-child{border-left:0}
+  .cmp .h{display:none}
+  .caption .n{font-size:40px}
+  .hud{font-size:9.5px}
+  .strokes li{grid-template-columns:48px 1fr}
+  .mod{padding:22px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*:before,*:after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+
+/* ---------- global header + routing ---------- */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--void)}
+.site-head{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;z-index:50;transition:background .3s,border-color .3s;border-bottom:1px solid transparent}
+.site-head .bar{display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:1320px;margin:0 auto;padding:16px var(--gut-r) 16px var(--gut-l)}
+.site-head.solid{background:rgba(3,7,20,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-color:var(--line)}
+.nav{display:flex;gap:4px;align-items:center}
+.nav a{font:500 13px/1 var(--f-body);text-decoration:none;color:var(--muted);padding:10px 12px;border-radius:999px;transition:color .2s,background .2s}
+.nav a:hover{color:var(--text)}
+.nav a[aria-current="page"]{color:var(--ice);background:rgba(0,229,255,.08)}
+.nav a.cta{color:var(--void);background:var(--cyan);font-weight:600;margin-left:8px}
+.menu-btn{display:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--line-c);background:rgba(3,7,20,.5);color:var(--text);cursor:pointer;place-items:center}
+.menu-btn span{display:block;width:16px;height:1.5px;background:currentColor;box-shadow:0 5px 0 currentColor,0 -5px 0 currentColor}
+.drawer{position:fixed;inset:0;z-index:70;background:rgba(3,7,20,.97);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;flex-direction:column;padding:calc(18px + env(safe-area-inset-top,0px)) var(--gut-r) calc(24px + env(safe-area-inset-bottom,0px)) var(--gut-l);overflow-y:auto}
+.drawer .top{display:flex;justify-content:space-between;align-items:center}
+.drawer .close{width:44px;height:44px;border-radius:50%;border:1px solid var(--line-c);background:none;color:var(--text);font-size:20px;cursor:pointer}
+.drawer nav{display:flex;flex-direction:column;margin-top:36px}
+.drawer nav a{display:flex;align-items:baseline;gap:16px;text-decoration:none;padding:14px 0;border-bottom:1px solid var(--line);font:800 30px/1.1 var(--f-display);letter-spacing:-.02em}
+.drawer nav a i{font:500 11px/1 var(--f-mono);font-style:normal;color:var(--cyan);letter-spacing:.14em;width:24px}
+.drawer nav a[aria-current="page"]{color:var(--cyan)}
+.drawer .foot{margin-top:auto;padding-top:28px;color:var(--faint);font:500 11px/1.7 var(--f-mono);letter-spacing:.12em;text-transform:uppercase}
+.page[hidden]{display:none!important}
+.hero .skipwrap{position:absolute;z-index:5;top:calc(84px + env(safe-area-inset-top,0px));left:calc(var(--gut-l) + 12px)}
+.hud{top:calc(84px + env(safe-area-inset-top,0px))}
+.hero.done .scrim{background:linear-gradient(180deg,rgba(3,7,20,.75) 0%,transparent 16%,transparent 38%,rgba(3,7,20,.94) 72%,rgba(3,7,20,.98) 100%)}
+@media (min-width:900px){.hero.done .scrim{background:linear-gradient(90deg,rgba(3,7,20,.95) 0%,rgba(3,7,20,.75) 38%,transparent 62%),linear-gradient(180deg,rgba(3,7,20,.7),transparent 18%)}}
+
+/* sub-page hero */
+.phero{position:relative;padding-block:calc(150px + env(safe-area-inset-top,0px)) clamp(56px,8vw,100px);overflow:hidden;isolation:isolate;border-bottom:1px solid var(--line)}
+.phero .ghost{position:absolute;right:max(-2vw,-20px);bottom:-4vw;font:800 clamp(140px,26vw,380px)/.8 var(--f-display);color:transparent;-webkit-text-stroke:1px rgba(0,229,255,.16);z-index:-1;letter-spacing:-.04em;pointer-events:none;user-select:none}
+.phero h1{font-size:clamp(40px,7.6vw,104px);margin-top:22px;max-width:14ch}
+.phero h1 em{font-style:normal;color:var(--cyan);text-shadow:0 0 40px rgba(0,229,255,.35)}
+.phero .lede{font-size:clamp(17px,1.9vw,21px)}
+.crumbs{font:500 11px/1 var(--f-mono);letter-spacing:.2em;text-transform:uppercase;color:var(--faint)}
+.crumbs b{color:var(--cyan);font-weight:600}
+
+/* generic grids */
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:clamp(36px,5vw,60px)}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:clamp(36px,5vw,60px)}
+.cell{border:1px solid var(--line);border-radius:6px;padding:24px;min-width:0;background:linear-gradient(180deg,rgba(11,20,51,.7),rgba(8,16,40,.35));transition:border-color .3s,transform .3s}
+.cell:hover{border-color:var(--line-c)}
+.cell .id{font:600 11px/1 var(--f-mono);letter-spacing:.2em;color:var(--cyan);text-transform:uppercase}
+.cell h3{font-size:19px;margin-top:28px;line-height:1.2}
+.cell p{color:var(--muted);margin-top:10px;font-size:14.5px}
+a.cell{text-decoration:none;display:block}
+a.cell .go{display:inline-flex;margin-top:18px;font:600 12px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ice)}
+a.cell:hover{transform:translateY(-3px)}
+
+/* the loop (home + studio) */
+.loop{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,6vw,80px);align-items:center;margin-top:clamp(36px,5vw,60px)}
+.loop svg{width:100%;max-width:440px;justify-self:center}
+.loop ol{list-style:none;margin:0;padding:0;display:grid;gap:18px}
+.loop li{display:grid;grid-template-columns:44px 1fr;gap:14px;align-items:start}
+.loop li .k{width:44px;height:44px;border-radius:50%;border:1px solid var(--cyan);display:grid;place-items:center;font:600 12px/1 var(--f-mono);color:var(--cyan)}
+.loop li b{display:block;font:600 18px/1.3 var(--f-display)}
+.loop li span{color:var(--muted);font-size:15px}
+.orbit-dot{offset-path:path("M220 60 A160 160 0 1 1 219.9 60");animation:od 6s linear infinite}
+@keyframes od{to{offset-distance:100%}}
+
+/* anatomy (about) */
+.anat{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,70px);align-items:center;margin-top:clamp(36px,5vw,60px)}
+.anat svg{width:100%;max-width:460px;justify-self:center}
+.anat dl{margin:0;display:grid;gap:0;border-top:1px solid var(--line)}
+.anat dl div{display:grid;grid-template-columns:120px 1fr;gap:16px;padding:18px 0;border-bottom:1px solid var(--line)}
+.anat dt{font:600 12px/1.5 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--cyan)}
+.anat dd{margin:0;color:var(--muted)}
+.anat dd b{color:var(--text);font-weight:600;display:block}
+
+/* industries */
+.ind{display:grid;grid-template-columns:repeat(2,1fr);gap:0;margin-top:clamp(36px,5vw,60px);border-top:1px solid var(--line)}
+.ind article{display:grid;grid-template-columns:64px 1fr;gap:18px;padding:26px 12px 26px 0;border-bottom:1px solid var(--line);min-width:0}
+.ind article:nth-child(odd){border-right:1px solid var(--line);padding-right:28px}
+.ind article:nth-child(even){padding-left:28px}
+.ind .ic{width:56px;height:56px;border:1px solid var(--line-c);border-radius:50%;display:grid;place-items:center}
+.ind .ic svg{width:28px;height:28px}
+.ind .ic svg *{fill:none;stroke:var(--cyan);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.ind h3{font-size:20px}
+.ind p{color:var(--muted);margin-top:6px;font-size:15px}
+.ind .pair{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px}
+.ind .pair span{font:500 11px/1 var(--f-mono);color:var(--ice);border:1px solid var(--line);border-radius:999px;padding:7px 10px}
+
+/* calendar (studio) */
+.cal{margin-top:clamp(28px,4vw,44px);overflow-x:auto;border:1px solid var(--line);border-radius:6px}
+.cal table{width:100%;min-width:620px;border-collapse:collapse;font-size:14px}
+.cal th{font:600 10.5px/1 var(--f-mono);letter-spacing:.2em;text-transform:uppercase;color:var(--faint);text-align:left;padding:14px 16px;border-bottom:1px solid var(--line)}
+.cal td{padding:14px 16px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--muted)}
+.cal tr:last-child td{border-bottom:0}
+.cal td:first-child{font:600 13px/1.4 var(--f-mono);color:var(--text)}
+.cal .t{display:inline-block;font:600 10.5px/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;padding:6px 8px;border-radius:3px;background:rgba(0,229,255,.1);color:var(--ice);border:1px solid var(--line-c)}
+.cal td:last-child{font-family:var(--f-mono);color:var(--text);white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* next steps (contact) */
+.next{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:clamp(36px,5vw,60px);border:1px solid var(--line);border-radius:6px}
+.next div{padding:24px;border-left:1px solid var(--line);min-width:0}
+.next div:first-child{border-left:0}
+.next .no{font:800 34px/1 var(--f-display);color:transparent;-webkit-text-stroke:1px var(--cyan)}
+.next b{display:block;margin-top:18px;font:600 18px/1.3 var(--f-display)}
+.next span{display:block;margin-top:8px;color:var(--muted);font-size:14.5px}
+
+.band{margin-top:clamp(48px,7vw,90px);border:1px solid var(--line-c);border-radius:8px;padding:clamp(24px,4vw,44px);display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:space-between;background:radial-gradient(100% 140% at 100% 0%,rgba(0,229,255,.14),transparent 60%),var(--navy-2)}
+.band b{font:800 clamp(22px,3vw,34px)/1.15 var(--f-display);letter-spacing:-.02em;max-width:22ch;display:block}
+.band span{color:var(--muted);display:block;margin-top:8px}
+
+@media (max-width:980px){
+  .nav{display:none}.menu-btn{display:grid}
+  .g4{grid-template-columns:repeat(2,1fr)}
+  .g3{grid-template-columns:1fr 1fr}
+}
+@media (max-width:860px){
+  .loop,.anat{grid-template-columns:1fr}
+  .loop svg,.anat svg{max-width:320px;justify-self:start}
+  .ind{grid-template-columns:1fr}
+  .ind article:nth-child(odd){border-right:0;padding-right:0}
+  .ind article:nth-child(even){padding-left:0}
+  .next{grid-template-columns:1fr}
+  .next div{border-left:0;border-top:1px solid var(--line)}
+  .next div:first-child{border-top:0}
+}
+@media (max-width:560px){
+  .g4,.g3{grid-template-columns:1fr}
+  .anat dl div{grid-template-columns:1fr;gap:6px}
+  .hero .skipwrap{top:auto;bottom:118px;left:auto;right:calc(var(--gut-r) + 12px)}
+}
+
+.mod .ctas{margin-top:22px}
+</style>
+</head>
+<body>
+<header class="site-head" id="sitehead">
+  <div class="bar">
+    <a class="brand" href="#home" aria-label="Postly Engines home">
+      <svg viewBox="18 16 166 166" aria-hidden="true"><rect x="42" y="38" width="32" height="128" rx="10" fill="none" stroke="#6AF2FF" stroke-width="9"/><rect x="51" y="50" width="14" height="44" rx="4" fill="#00E5FF"/><path d="M74 50 H110 A37 37 0 0 1 110 124 H74" fill="none" stroke="#00E5FF" stroke-width="18" stroke-linecap="round"/><circle r="8" cx="147" cy="87" fill="#050A1E" stroke="#00E5FF" stroke-width="4"/></svg>
+      <span><b>POSTLY</b><small>ENGINES</small></span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="#home">Home</a><a href="#about">About</a><a href="#engines">Engines</a><a href="#industries">Industries</a><a href="#work">Work</a><a href="#contact" class="cta">Book a demo</a>
+    </nav>
+    <button class="menu-btn" id="menu-open" type="button" aria-label="Open menu" aria-controls="drawer" aria-expanded="false"><span></span></button>
+  </div>
+</header>
+
+<div class="drawer" id="drawer" hidden>
+  <div class="top">
+    <span class="brand"><svg viewBox="18 16 166 166" aria-hidden="true"><rect x="42" y="38" width="32" height="128" rx="10" fill="none" stroke="#6AF2FF" stroke-width="9"/><rect x="51" y="50" width="14" height="44" rx="4" fill="#00E5FF"/><path d="M74 50 H110 A37 37 0 0 1 110 124 H74" fill="none" stroke="#00E5FF" stroke-width="18" stroke-linecap="round"/><circle r="8" cx="147" cy="87" fill="#050A1E" stroke="#00E5FF" stroke-width="4"/></svg><span><b>POSTLY</b><small>ENGINES</small></span></span>
+    <button class="close" id="menu-close" type="button" aria-label="Close menu">✕</button>
+  </div>
+  <nav aria-label="Main">
+    <a href="#home"><i>00</i>Home</a><a href="#about"><i>01</i>About</a><a href="#engines"><i>02</i>Engines</a><a href="#industries"><i>03</i>Industries</a><a href="#work"><i>04</i>Work</a><a href="#contact"><i>05</i>Contact</a>
+  </nav>
+  <div class="foot">WhatsApp +92 309 2336339<br>Postly Engines · Pakistan-wide<br>POS · Websites · Ordering · Dashboards</div>
+</div>
+
+<!-- ================= HOME ================= -->
+<div class="page" data-page="home">
+<header class="hero" id="top">
+  <canvas id="stage" aria-label="Animated film: the Postly Engines logo ignites and powers a ring of local businesses"></canvas>
+  <div class="fallback" aria-hidden="true">
+    <svg viewBox="18 12 170 170"><rect x="42" y="38" width="32" height="128" rx="10" fill="none" stroke="#6AF2FF" stroke-width="7"/><g><animateTransform attributeName="transform" type="translate" values="0 0;0 58;0 0" dur="1.8s" calcMode="spline" keySplines=".6 0 .4 1;.6 0 .4 1" repeatCount="indefinite"/><rect x="51" y="50" width="14" height="44" rx="4" fill="#00E5FF"/><rect x="47" y="58" width="22" height="4" rx="2" fill="#00E5FF" opacity=".7"/></g><path d="M74 50 H110 A37 37 0 0 1 110 124 H74" fill="none" stroke="#00E5FF" stroke-width="16" stroke-linecap="round"/><circle r="7" fill="#050A1E" stroke="#00E5FF" stroke-width="3"><animateMotion dur="1.8s" repeatCount="indefinite" path="M74 50 H110 A37 37 0 0 1 110 124 H74"/></circle><circle cx="58" cy="28" r="6" fill="#6AF2FF"><animate attributeName="opacity" values=".2;1;.2" dur=".9s" repeatCount="indefinite"/></circle></svg>
+  </div>
+  <div class="labels" id="labels"></div>
+  <div class="flash" id="flash"></div>
+  <div class="scrim"></div>
+  <div class="scan"></div>
+  <div class="frame"></div>
+  <div class="skipwrap"><button class="btn-ghost" id="skip" type="button">Skip intro</button></div>
+
+  <div class="hud" id="hud" aria-hidden="true">
+    <div><span class="live"></span>Engine test run</div>
+    <div>T+<b id="h-t">00.0</b>s</div>
+    <div>RPM <b id="h-rpm">0</b></div>
+    <div>Powered <b id="h-pw">0/8</b></div>
+  </div>
+
+  <div class="caption" id="caption" aria-live="polite">
+    <div class="n" id="cap-n">00</div>
+    <div><b id="cap-k">Standby</b><p id="cap-p">Every business runs on an engine.</p></div>
+  </div>
+  <div class="timeline" id="timeline" aria-hidden="true">
+    <div class="track"></div><div class="fill" id="tl-fill"></div>
+  </div>
+
+  <div class="final" id="final">
+    <div class="k">Postly Engines · Pakistan-wide</div>
+    <h1>One engine. <em>Every business.</em></h1>
+    <p class="sub">We build custom software engines that run your business, from the counter and the kitchen to your website and the owner's phone.</p>
+    <div class="ctas">
+      <a class="btn" href="#engines">Explore the engines <span aria-hidden="true">→</span></a>
+      <a class="btn alt" href="https://wa.me/923092336339?text=Hi%20Postly%20Engines%2C%20I%27d%20like%20to%20book%20a%20demo." target="_blank" rel="noopener">Book a demo <span aria-hidden="true">↗</span></a>
+    </div>
+  </div>
+</header>
+
+
+<main>
+
+  <section class="s">
+    <div class="grid-bg"></div>
+    <div class="wrap">
+      <div class="manifesto">
+        <div>
+          <div class="eyebrow">The engine</div>
+          <p class="big" style="margin-top:24px"><span>Most shops still run on paper slips, a billing machine and a WhatsApp group.</span> We replace all of it with <em>one engine</em>, built around the way your business already works.</p>
+        </div>
+        <div class="mark-live" aria-hidden="true">
+          <svg viewBox="18 12 170 170"><defs><filter id="gl2" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#gl2)"><rect x="42" y="38" width="32" height="128" rx="10" fill="none" stroke="#6AF2FF" stroke-width="7"/><g><animateTransform attributeName="transform" type="translate" values="0 0;0 58;0 0" dur="1.8s" calcMode="spline" keySplines=".6 0 .4 1;.6 0 .4 1" repeatCount="indefinite"/><rect x="51" y="50" width="14" height="44" rx="4" fill="#00E5FF"/><rect x="47" y="58" width="22" height="4" rx="2" fill="#00E5FF" opacity=".7"/></g><path d="M74 50 H110 A37 37 0 0 1 110 124 H74" fill="none" stroke="#00E5FF" stroke-width="16" stroke-linecap="round"/><circle r="7" fill="#050A1E" stroke="#00E5FF" stroke-width="3"><animateMotion dur="1.8s" repeatCount="indefinite" path="M74 50 H110 A37 37 0 0 1 110 124 H74"/></circle><circle cx="58" cy="28" r="6" fill="#6AF2FF"><animate attributeName="opacity" values=".2;1;.2" dur=".9s" repeatCount="indefinite"/><animate attributeName="r" values="4;7.5;4" dur=".9s" repeatCount="indefinite"/></circle></g></svg>
+        </div>
+      </div>
+      <div class="specs">
+        <div><b>&lt;1 sec</b><span>from a customer's order to your screen</span></div>
+        <div><b>1 system</b><span>for counter, kitchen, stock, staff and owner</span></div>
+        <div><b>0</b><span>new hardware needed: it runs on the devices you already have</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="s" id="what">
+    <div class="wrap">
+      <div class="eyebrow">What we build</div>
+      <h2>One engine. <em>Every part</em> of the machine.</h2>
+      <p class="lede">Most shops run on a billing machine at the counter, paper slips in the back and guesswork for the owner. We replace all of it with one connected engine.</p>
+      <div class="g4">
+        <a class="cell" href="#engines"><div class="id">SYS · 01</div><h3>Business systems</h3><p>Custom POS and management tools, from the counter to the owner's phone.</p><span class="go">Engines →</span></a>
+        <a class="cell" href="#engines"><div class="id">WEB · 02</div><h3>Websites that sell</h3><p>Your own site that takes orders and bookings, wired into your system.</p><span class="go">Engines →</span></a>
+        <a class="cell" href="#engines"><div class="id">ORD · 03</div><h3>Online &amp; QR ordering</h3><p>Customers order from their phone. Orders land on the right screen instantly.</p><span class="go">Engines →</span></a>
+        <a class="cell" href="#engines"><div class="id">OWN · 04</div><h3>Owner dashboard</h3><p>Sales, stock, staff and profit for every branch, live on your phone.</p><span class="go">Engines →</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="s">
+    <div class="grid-bg"></div>
+    <div class="wrap">
+      <div class="eyebrow">The life of one order</div>
+      <h2>Every order runs <em>through the engine.</em></h2>
+      <div class="loop">
+        <svg viewBox="0 0 440 440" aria-hidden="true">
+  <circle cx="220" cy="220" r="160" fill="none" stroke="rgba(0,229,255,.35)" stroke-dasharray="3 7"/>
+  <circle cx="220" cy="220" r="100" fill="none" stroke="rgba(242,246,255,.08)"/>
+  <circle cx="220" cy="220" r="70" fill="rgba(0,229,255,.06)"/>
+  <g transform="translate(176 176) scale(.52)"><rect x="42" y="38" width="32" height="128" rx="10" fill="none" stroke="#6AF2FF" stroke-width="7"/><g><animateTransform attributeName="transform" type="translate" values="0 0;0 58;0 0" dur="1.8s" calcMode="spline" keySplines=".6 0 .4 1;.6 0 .4 1" repeatCount="indefinite"/><rect x="51" y="50" width="14" height="44" rx="4" fill="#00E5FF"/><rect x="47" y="58" width="22" height="4" rx="2" fill="#00E5FF" opacity=".7"/></g><path d="M74 50 H110 A37 37 0 0 1 110 124 H74" fill="none" stroke="#00E5FF" stroke-width="16" stroke-linecap="round"/><circle cx="147" cy="87" r="7" fill="#050A1E" stroke="#00E5FF" stroke-width="3"/><circle cx="58" cy="28" r="6" fill="#6AF2FF"><animate attributeName="opacity" values=".2;1;.2" dur=".9s" repeatCount="indefinite"/></circle></g>
+  <circle class="orbit-dot" r="7" fill="#E8FDFF" style="filter:drop-shadow(0 0 8px #00E5FF)"/>
+  <g font-family="JetBrains Mono, monospace" font-size="12" letter-spacing="2" text-anchor="middle">
+    <circle cx="220" cy="60" r="30" fill="#030714" stroke="#00E5FF"/><text x="220" y="64" fill="#6AF2FF">01</text><text x="220" y="22" fill="#F2F6FF">ORDER</text>
+    <circle cx="358.6" cy="300" r="30" fill="#00E5FF"/><text x="358.6" y="304" fill="#030714">02</text><text x="358.6" y="350" fill="#F2F6FF">KITCHEN</text>
+    <circle cx="81.4" cy="300" r="30" fill="#030714" stroke="#00E5FF"/><text x="81.4" y="304" fill="#6AF2FF">03</text><text x="81.4" y="350" fill="#F2F6FF">OWNER</text>
+  </g>
+</svg>
+        <ol>
+          <li><span class="k">01</span><div><b>A customer orders</b><span>At the counter, from a table QR or on your own website. No commission to anyone.</span></div></li>
+          <li><span class="k">02</span><div><b>The right screen rings</b><span>Kitchen, bar or counter gets it in under a second, and stock deducts itself.</span></div></li>
+          <li><span class="k">03</span><div><b>The owner sees it live</b><span>Sale, stock and profit update on your phone, wherever you are. Then the next order comes in.</span></div></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="fleet" aria-label="Industries we power">
+    <div class="row" aria-hidden="true">
+      <span class="on">Restaurants</span><i>✦</i><span>Cafés</span><i>✦</i><span class="on">Coffee shops</span><i>✦</i><span>Bakeries</span><i>✦</i><span class="on">Pharmacies</span><i>✦</i>
+      <span class="on">Restaurants</span><i>✦</i><span>Cafés</span><i>✦</i><span class="on">Coffee shops</span><i>✦</i><span>Bakeries</span><i>✦</i><span class="on">Pharmacies</span><i>✦</i>
+    </div>
+    <div class="row r2" aria-hidden="true">
+      <span>Salons</span><i>✦</i><span class="on">Beauty parlours</span><i>✦</i><span>Snooker clubs</span><i>✦</i><span class="on">Grocery stores</span><i>✦</i><span>Vape shops</span><i>✦</i>
+      <span>Salons</span><i>✦</i><span class="on">Beauty parlours</span><i>✦</i><span>Snooker clubs</span><i>✦</i><span class="on">Grocery stores</span><i>✦</i><span>Vape shops</span><i>✦</i>
+    </div>
+    <div class="wrap cap">
+      <div class="eyebrow">Who we power</div>
+      <h2 style="font-size:clamp(28px,4.4vw,52px);margin-top:18px;max-width:20ch">If it has a counter, <em style="font-style:normal;color:var(--cyan)">we can power it.</em></h2>
+      <p class="lede">Restaurants, cafés, coffee shops, bakeries, pharmacies, salons, beauty parlours, snooker clubs, grocery stores, rentals and vape shops. Every one gets its own engine, tuned to how it sells.</p>
+      <div class="ctas"><a class="btn alt" href="#industries">See every industry <span aria-hidden="true">→</span></a></div>
+    </div>
+  </section>
+
+  <section class="s">
+    <div class="wrap">
+      <div class="band">
+        <div><b>Already running live.</b><span>A two-branch bubble tea and coffee brand runs its website, tables, kitchen and dashboard on a Postly engine.</span></div>
+        <a class="btn" href="#work">See the work <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+</main>
+</div>
+
+<!-- ================= ABOUT ================= -->
+<div class="page" data-page="about" hidden>
+  <section class="phero">
+    <div class="grid-bg"></div><div class="ghost" aria-hidden="true">01</div>
+    <div class="wrap">
+      <div class="crumbs"><b>01</b> / About</div>
+      <h1>The engine room for <em>local business.</em></h1>
+      <p class="lede">Big chains have tech teams, apps and custom software. The shop down the road, in any city, has a billing machine and a WhatsApp group. Postly Engines exists to close that gap.</p>
+    </div>
+  </section>
+
+  <section class="s">
+    <div class="wrap manifesto">
+      <div>
+        <div class="eyebrow">Our story</div>
+        <p class="big" style="margin-top:24px">We started by walking into <em>local shops</em> that were busy every night <span>and still could not say where the money went.</span></p>
+        <p class="lede">Orders on paper. Stock that vanished. Owners stuck at the counter because they could not see anything from home. Every owner had the same problem: their business had no engine. So we decided to build one, around each business, and to stay with them while it runs.</p>
+      </div>
+      <div class="specs" style="grid-template-columns:1fr;margin-top:0">
+        <div><b>Yahya Ali</b><span>Founder. Builds every engine around the business it runs.</span></div>
+        <div><b>Built in Pakistan</b><span>Designed, built and supported here, for businesses in every city.</span></div>
+        <div><b>Built for you</b><span>No two engines are the same. Yours fits your shop.</span></div>
+        <div><b>Built to last</b><span>We keep improving it for as long as you run it.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="s">
+    <div class="grid-bg"></div>
+    <div class="wrap">
+      <div class="eyebrow">Why "Engines"</div>
+      <h2>Our logo is a <em>working engine.</em></h2>
+      <p class="lede">The P in Postly is drawn as a cylinder with a piston inside. Every part stands for something we do.</p>
+      <div class="anat">
+        <svg viewBox="0 0 300 230" aria-hidden="true">
+  <defs><filter id="gl3" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+  <g transform="translate(60 18)" filter="url(#gl3)"><rect x="42" y="38" width="32" height="128" rx="10" fill="none" stroke="#6AF2FF" stroke-width="7"/><g><animateTransform attributeName="transform" type="translate" values="0 0;0 58;0 0" dur="1.8s" calcMode="spline" keySplines=".6 0 .4 1;.6 0 .4 1" repeatCount="indefinite"/><rect x="51" y="50" width="14" height="44" rx="4" fill="#00E5FF"/><rect x="47" y="58" width="22" height="4" rx="2" fill="#00E5FF" opacity=".7"/></g><path d="M74 50 H110 A37 37 0 0 1 110 124 H74" fill="none" stroke="#00E5FF" stroke-width="16" stroke-linecap="round"/><circle cx="147" cy="87" r="7" fill="#050A1E" stroke="#00E5FF" stroke-width="3"/><circle cx="58" cy="28" r="6" fill="#6AF2FF"><animate attributeName="opacity" values=".2;1;.2" dur=".9s" repeatCount="indefinite"/></circle></g>
+  <g stroke="rgba(242,246,255,.4)" fill="none" stroke-width="1">
+    <path d="M102 170 H40"/><path d="M118 120 H40"/><path d="M118 46 H40"/><path d="M215 105 L262 105"/>
+  </g>
+  <g font-family="JetBrains Mono, monospace" font-size="12" font-weight="600" text-anchor="middle">
+    <circle cx="28" cy="170" r="12" fill="#030714" stroke="#00E5FF"/><text x="28" y="174" fill="#6AF2FF">A</text>
+    <circle cx="28" cy="120" r="12" fill="#030714" stroke="#00E5FF"/><text x="28" y="124" fill="#6AF2FF">B</text>
+    <circle cx="28" cy="46" r="12" fill="#030714" stroke="#00E5FF"/><text x="28" y="50" fill="#6AF2FF">C</text>
+    <circle cx="274" cy="105" r="12" fill="#00E5FF"/><text x="274" y="109" fill="#030714">D</text>
+  </g>
+</svg>
+        <dl>
+          <div><dt>A · Cylinder</dt><dd><b>Your business</b>The strong outer shell. Everything we build fits inside the way you already work.</dd></div>
+          <div><dt>B · Piston</dt><dd><b>Our team</b>Moving every day: building, fixing and upgrading, so your business never stops.</dd></div>
+          <div><dt>C · Spark</dt><dd><b>Ideas</b>The fresh idea behind every feature we build.</dd></div>
+          <div><dt>D · Orbit</dt><dd><b>The improvement loop</b>Your live data shows what to build next, so the engine keeps getting better.</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="s">
+    <div class="wrap">
+      <div class="eyebrow">What we believe</div>
+      <h2>Four rules we <em>don't break.</em></h2>
+      <div class="g4">
+        <div class="cell"><div class="id">Rule 1</div><h3>Built around you</h3><p>We change the software to fit your shop. We never ask your shop to fit the software.</p></div>
+        <div class="cell"><div class="id">Rule 2</div><h3>One system, every screen</h3><p>Counter, kitchen, website and owner on one engine, so nothing gets lost in between.</p></div>
+        <div class="cell"><div class="id">Rule 3</div><h3>On the ground</h3><p>We visit, we train your staff in person, and we're one WhatsApp message away.</p></div>
+        <div class="cell"><div class="id">Rule 4</div><h3>Always tuning</h3><p>An engine is never finished. We keep improving yours every month.</p></div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="s">
+    <div class="wrap">
+      <div class="eyebrow">How we work</div>
+      <h2>Every engine runs on <em>four strokes.</em> So does every project.</h2>
+      <div class="cycle">
+        <svg class="cyl" viewBox="0 0 300 330" aria-hidden="true">
+          <defs><linearGradient id="cg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#00E5FF" stop-opacity=".25"/><stop offset="1" stop-color="#00E5FF" stop-opacity="0"/></linearGradient></defs>
+          <g fill="none" stroke="#6AF2FF" stroke-width="1.5">
+            <rect x="90" y="56" width="120" height="250" rx="14"/>
+            <path d="M120 56V30M180 56V30" stroke-opacity=".5"/>
+            <path d="M60 80h30M210 80h30" stroke-opacity=".4"/>
+            <path d="M70 120h20M210 120h20M70 160h20M210 160h20M70 200h20M210 200h20" stroke-opacity=".25"/>
+          </g>
+          <g class="spk"><circle cx="150" cy="40" r="9" fill="#6AF2FF"/><circle cx="150" cy="40" r="24" fill="#00E5FF" opacity=".25"/></g>
+          <g class="pist">
+            <rect x="96" y="64" width="108" height="60" rx="6" fill="url(#cg)" stroke="#00E5FF" stroke-width="1.5"/>
+            <path d="M96 78h108M96 88h108" stroke="#00E5FF" stroke-opacity=".6"/>
+            <path d="M150 124v60" stroke="#00E5FF" stroke-width="6" stroke-linecap="round"/>
+          </g>
+        </svg>
+        <ol class="strokes">
+          <li><span class="no">1</span><div><b>Intake</b><h3>We listen</h3><p>We visit your place, watch a busy hour and learn how your team really works.</p></div></li>
+          <li><span class="no">2</span><div><b>Compression</b><h3>We design</h3><p>We shape one system around your menu, your branches and your goals.</p></div></li>
+          <li><span class="no">3</span><div><b>Power</b><h3>We launch</h3><p>We set everything up, train your staff and go live. You keep the hardware you already have.</p></div></li>
+          <li><span class="no">4</span><div><b>Tune</b><h3>We keep improving</h3><p>Support one WhatsApp message away, and new features whenever your business needs them.</p></div></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= ENGINES ================= -->
+<div class="page" data-page="engines" hidden>
+  <section class="phero">
+    <div class="grid-bg"></div><div class="ghost" aria-hidden="true">02</div>
+    <div class="wrap">
+      <div class="crumbs"><b>02</b> / Engines</div>
+      <h1>Software that fits <em>your shop.</em></h1>
+      <p class="lede">Every Postly engine is built around one business: its menu or catalogue, its branches, its staff and the way it sells. Here are the parts we put together.</p>
+    </div>
+  </section>
+
+  <section class="s">
+    <div class="wrap">
+      <div class="eyebrow">Engine parts</div>
+      <h2>Every screen in your business, <em>connected.</em></h2>
+      <div class="g3">
+        <div class="cell"><div class="id">Part · Counter</div><h3>Billing &amp; POS</h3><p>Fast touch billing for walk-in, dine-in, takeaway and delivery. Every sale gets a receipt.</p></div>
+        <div class="cell"><div class="id">Part · Floor</div><h3>Orders that travel</h3><p>An order placed anywhere reaches the right screen in under a second: kitchen, bar, or counter.</p></div>
+        <div class="cell"><div class="id">Part · Stock</div><h3>Stock that counts itself</h3><p>Sales deduct stock automatically, with alerts before you run out.</p></div>
+        <div class="cell"><div class="id">Part · Team</div><h3>Staff &amp; roles</h3><p>Personal logins, the right access for each role, and a clear record of who did what.</p></div>
+        <div class="cell"><div class="id">Part · Owner</div><h3>Your business, live</h3><p>Sales, profit and every branch on your phone, from anywhere.</p></div>
+        <div class="cell"><div class="id">Part · Online</div><h3>Ordering &amp; bookings</h3><p>Your own website, table QR and bookings, with no commission to anyone.</p></div>
+        <div class="cell"><div class="id">Part · Tax</div><h3>Tax-ready billing</h3><p>FBR and provincial tax integration, so every invoice is reported the right way.</p></div>
+        <div class="cell"><div class="id">Part · Branches</div><h3>Every branch, one login</h3><p>Shared menu or catalogue, separate stock and staff, and a combined view for the owner.</p></div>
+        <div class="cell"><div class="id">Part · Payments</div><h3>Every way to pay</h3><p>Cash, card, JazzCash, Easypaisa and bank transfer, with a clean day-end summary.</p></div>
+      </div>
+      <div class="note"><span>Runs on the <b>laptop, tablet or phone</b> you already have</span><span>Cash · Card · <b>JazzCash</b> · <b>Easypaisa</b></span><span><b>FBR</b> &amp; provincial tax ready</span></div>
+    </div>
+  </section>
+
+  <section class="s">
+    <div class="grid-bg"></div>
+    <div class="wrap">
+      <div class="eyebrow">Websites</div>
+      <h2>A website that <em>works a shift.</em></h2>
+      <p class="lede">Not a brochure that sits online. A fast, mobile-first site in your brand that takes orders and bookings around the clock and feeds them straight into your engine.</p>
+      <div class="g3">
+        <div class="cell"><div class="id">Fast</div><h3>Built for phones</h3><p>Most of your customers find you on a phone. Your site is built for that first.</p></div>
+        <div class="cell"><div class="id">Yours</div><h3>Your brand, your customers</h3><p>Your domain, your look and your own customer list, not a marketplace's.</p></div>
+        <div class="cell"><div class="id">Wired</div><h3>Connected to everything</h3><p>Orders, maps, WhatsApp and your POS, all working together.</p></div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="s">
+    <div class="wrap">
+      <div class="eyebrow">The difference</div>
+      <h2>A normal POS prints bills. <em>An engine runs the business.</em></h2>
+      <div class="cmp">
+        <div class="r h"><div>Off-the-shelf</div><div>A Postly engine</div></div>
+        <div class="r"><div><small>Built for</small>Everyone, so no one in particular</div><div><small>Built for</small>Your shop, your menu, your branches</div></div>
+        <div class="r"><div><small>Lives</small>On one counter PC</div><div><small>Lives</small>On the counter, the kitchen, the website and your phone</div></div>
+                <div class="r"><div><small>New features</small>Wait for an update, or never</div><div><small>New features</small>We build what your business needs next</div></div>
+        <div class="r"><div><small>Support</small>A call centre, if any</div><div><small>Support</small>A local team, one WhatsApp message away</div></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= INDUSTRIES ================= -->
+<div class="page" data-page="industries" hidden>
+  <section class="phero">
+    <div class="grid-bg"></div><div class="ghost" aria-hidden="true">03</div>
+    <div class="wrap">
+      <div class="crumbs"><b>03</b> / Industries</div>
+      <h1>If it has a counter, <em>we can power it.</em></h1>
+      <p class="lede">Every business sells differently, so every engine is tuned differently. These are the businesses we build for.</p>
+    </div>
+  </section>
+  <section class="s" style="border-top:0;padding-top:0">
+    <div class="wrap">
+      <div class="ind">
+        <article><span class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 22h24M6 22a10 10 0 0 1 20 0M16 12v-2M14 10h4"/></svg></span><div><h3>Restaurants</h3><p>Tables, kitchen and delivery on one screen.</p><div class="pair"><span>Table QR</span><span>Kitchen screen</span><span>Delivery</span></div></div></article>
+<article><span class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 12h15v7a6 6 0 0 1-6 6h-3a6 6 0 0 1-6-6zM21 14h2a3 3 0 0 1 0 6h-2M10 5v3M14 5v3"/></svg></span><div><h3>Cafés</h3><p>Orders from every table land straight at the bar.</p><div class="pair"><span>QR ordering</span><span>Loyalty</span><span>Bar screen</span></div></div></article>
+<article><span class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 4c6 0 9 6 9 12s-3 12-9 12-9-6-9-12 3-12 9-12zM16 4c-4 6 4 18 0 24"/></svg></span><div><h3>Coffee shops</h3><p>A fast counter for the morning rush, and regulars who come back.</p><div class="pair"><span>Quick billing</span><span>Regulars</span><span>Card & wallets</span></div></div></article>
+<article><span class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 27h22M7 27v-8h18v8M10 19v-5h12v5M16 14v-4M16 6v1"/></svg></span><div><h3>Bakeries</h3><p>Daily batches, fresh stock and custom orders that all add up.</p><div class="pair"><span>Batches</span><span>Pre-orders</span><span>Daily stock</span></div></div></article>
+<article><span class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M12 5h8v7h7v8h-7v7h-8v-7H5v-8h7z"/></svg></span><div><h3>Pharmacies</h3><p>Every batch and expiry date, under control.</p><div class="pair"><span>Batches & expiry</span><span>Fast search</span><span>Supplier orders</span></div></div></article>
+<article><span class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="9" cy="23" r="3"/><circle cx="9" cy="9" r="3"/><path d="M11.5 10.5L26 24M11.5 21.5L26 8"/></svg></span><div><h3>Salons</h3><p>Bookings, staff and services in one diary.</p><div class="pair"><span>Bookings</span><span>Staff schedule</span><span>Service menu</span></div></div></article>
+<article><span class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M12 28h8V16h-8zM13 16v-6l6-4v10"/></svg></span><div><h3>Beauty parlours</h3><p>Appointments, packages and client history in one place.</p><div class="pair"><span>Packages</span><span>Client history</span><span>Advance payments</span></div></div></article>
+<article><span class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="17" cy="18" r="8"/><path d="M17 15v6M4 4l7 7"/></svg></span><div><h3>Snooker clubs</h3><p>Table timers and billing that nobody can fudge.</p><div class="pair"><span>Table timers</span><span>Snacks & drinks</span><span>Member accounts</span></div></div></article>
+<article><span class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M3 5h4l3 14h14l3-10H8"/><circle cx="12" cy="25" r="1.5"/><circle cx="22" cy="25" r="1.5"/></svg></span><div><h3>Grocery stores</h3><p>Thousands of items, with low-stock alerts before shelves go empty.</p><div class="pair"><span>Barcodes</span><span>Low-stock alerts</span><span>Bulk pricing</span></div></div></article>
+<article><span class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 15L16 6l11 9v12H5zM13 27v-7h6v7"/></svg></span><div><h3>Rentals & stays</h3><p>Bookings, guests, cleaning and owner payouts on one engine.</p><div class="pair"><span>Reservations</span><span>Guest inbox</span><span>Owner payouts</span></div></div></article>
+<article><span class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M9 28V13h5v15zM10 13V9h3v4M18 10a3 3 0 0 1 5-1 3 3 0 0 1 4 4 3 3 0 0 1-3 3h-5a3 3 0 0 1-1-6z"/></svg></span><div><h3>Vape shops</h3><p>Every flavour and device tracked, sale by sale.</p><div class="pair"><span>Item-level stock</span><span>Repeat buyers</span><span>Branch stock</span></div></div></article>
+      </div>
+      <div class="band">
+        <div><b>Don't see your business here?</b><span>If you sell something, we can build its engine. Tell us how you work.</span></div>
+        <a class="btn" href="#contact">Book a demo <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= WORK ================= -->
+<div class="page" data-page="work" hidden>
+  <section class="phero">
+    <div class="grid-bg"></div><div class="ghost" aria-hidden="true">04</div>
+    <div class="wrap">
+      <div class="crumbs"><b>04</b> / Work</div>
+      <h1>Engines <em>on the road.</em></h1>
+      <p class="lede">Real businesses in food and hospitality, running live on engines we built.</p>
+    </div>
+  </section>
+
+  <section class="s">
+    <div class="grid-bg"></div>
+    <div class="wrap proof">
+      <div>
+        <div class="eyebrow">On the road</div>
+        <h2>Already <em>running live.</em></h2>
+        <p class="lede">Our first engine powers a two-branch bubble tea and coffee brand: website, table QR, counter, kitchen and owner dashboard, all on one system.</p>
+        <span class="status">Live now</span>
+        <div class="ctas"><a class="btn" href="#contact">Book a demo <span aria-hidden="true">→</span></a></div>
+      </div>
+      <div class="dyno">
+        <div><b>2</b><span>branches, one login</span></div>
+        <div><b>100+</b><span>menu items loaded</span></div>
+        <div><b>4</b><span>screens: web, POS, kitchen, owner</span></div>
+        <div><b>&lt;1s</b><span>order to kitchen screen</span></div>
+      </div>
+    </div>
+  </section>
+  <section class="s">
+    <div class="grid-bg"></div>
+    <div class="wrap">
+      <div class="eyebrow">More engines we've built</div>
+      <h2>Not just restaurants. <em>Whole industries.</em></h2>
+      <p class="lede">Before Postly Engines, our founder built and ran engines for hospitality. They still power real businesses every day.</p>
+      <div class="mods">
+        <article class="mod">
+          <svg class="glyph" viewBox="0 0 150 150" aria-hidden="true"><path d="M30 110V60l45-30 45 30v50z"/><rect x="62" y="80" width="26" height="30"/><path d="M45 70h12M93 70h12"/><circle cx="75" cy="75" r="58" stroke-dasharray="2 5"/></svg>
+          <div class="code mono"><span>ENGINE / HOSPITALITY</span><span>LIVE</span></div>
+          <h3>Ember OS</h3>
+          <p>"The engine behind every stay." The operating system that runs a luxury short-term rental company in Pakistan: bookings, messages, cleaning and payouts, 24 hours a day.</p>
+          <ul><li>Unified inbox</li><li>AI automation</li><li>Reservations calendar</li><li>Channel sync</li><li>Housekeeping &amp; tasks</li><li>Guest CRM</li><li>Revenue &amp; pricing</li><li>Owner settlements</li></ul>
+          <div class="ctas"><a class="btn alt" href="https://www.emberrentalspk.com/ember-os" target="_blank" rel="noopener">See Ember OS <span aria-hidden="true">↗</span></a></div>
+        </article>
+        <article class="mod">
+          <svg class="glyph" viewBox="0 0 150 150" aria-hidden="true"><rect x="35" y="40" width="80" height="70" rx="6"/><path d="M35 58h80M55 30v20M95 30v20"/><path d="M52 78h12v12H52zM70 78h12v12H70zM88 78h12v12H88z"/><circle cx="75" cy="75" r="58" stroke-dasharray="2 5"/></svg>
+          <div class="code mono"><span>ENGINE / CO-HOSTING</span><span>LIVE</span></div>
+          <h3>Hostly OS</h3>
+          <p>The software layer behind a full-service Airbnb co-hosting company, built for property owners in the US, UK and Europe.</p>
+          <ul><li>Guest helper</li><li>Price watch</li><li>Calendar &amp; cleaning</li><li>Owner reporting</li><li>Human approval</li></ul>
+          <div class="ctas"><a class="btn alt" href="https://hostly-website.vercel.app/" target="_blank" rel="noopener">See Hostly <span aria-hidden="true">↗</span></a></div>
+        </article>
+      </div>
+    </div>
+  </section>
+  <section class="s">
+    <div class="wrap">
+      <div class="eyebrow">What we delivered</div>
+      <h2>One brand. Two branches. <em>One engine.</em></h2>
+      <div class="g3">
+        <div class="cell"><div class="id">For guests</div><h3>Website &amp; table QR</h3><p>A branded ordering website with pickup and delivery, and a QR menu on every table.</p></div>
+        <div class="cell"><div class="id">For staff</div><h3>Counter &amp; kitchen</h3><p>Fast billing, a live floor and kitchen screens that ring the moment an order lands.</p></div>
+        <div class="cell"><div class="id">For the owner</div><h3>Both branches, one view</h3><p>Sales and profit for each branch, side by side, from one login.</p></div>
+      </div>
+      <div class="band">
+        <div><b>The next engine could be yours.</b><span>We're taking on a limited number of new businesses across Pakistan this season.</span></div>
+        <a class="btn" href="#contact">Book a demo <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= CONTACT ================= -->
+<div class="page" data-page="contact" hidden>
+
+  <section class="phero start">
+    <div class="grid-bg"></div>
+    <div class="wrap">
+      <div class="crumbs"><b>05</b> / Contact</div>
+      <h1>Start your <em>engine.</em></h1>
+      <p class="lede">Book a free demo. Tell us how your business runs today, and we'll show you what it looks like with an engine behind it.</p>
+      <div class="ctas"><a class="btn" href="https://wa.me/923092336339?text=Hi%20Postly%20Engines%2C%20I%27d%20like%20to%20book%20a%20demo." target="_blank" rel="noopener">Book a demo on WhatsApp <span aria-hidden="true">↗</span></a></div>
+      <div class="contact">
+        <div><small>Where we work</small><b>All over Pakistan</b><span>On-site visits and remote setup, city to city.</span></div>
+        <div><small>WhatsApp</small><b>+92 309 2336339</b><span><a href="https://wa.me/923092336339?text=Hi%20Postly%20Engines%2C%20I%27d%20like%20to%20book%20a%20demo." target="_blank" rel="noopener">Book a demo on WhatsApp ↗</a></span></div>
+        <div><small>Instagram</small><b>@postlyengines</b><span><a href="https://www.instagram.com/postlyengines/" target="_blank" rel="noopener">Follow us ↗</a></span></div>
+        <div><small>What we build</small><b>POS · Websites · Ordering · Dashboards</b><span>One system, every screen.</span></div>
+      </div>
+    </div>
+  </section>
+  <section class="s">
+    <div class="wrap">
+      <div class="eyebrow">What happens next</div>
+      <h2>From hello to <em>live.</em></h2>
+      <div class="next">
+        <div><span class="no">1</span><b>You book a demo</b><span>Message us on WhatsApp. We ask a few questions about how your business runs today.</span></div>
+        <div><span class="no">2</span><b>We visit &amp; demo</b><span>We come to your shop and show you a live engine running on a real business.</span></div>
+        <div><span class="no">3</span><b>We build &amp; launch</b><span>You get a plan and a price. Once you say yes, we build, train and go live.</span></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="wrap"><span>© 2026 Postly Engines</span><span>Made in Pakistan · Working nationwide</span><a href="#home" style="text-decoration:none">Back to the engine ↑</a></div>
+</footer>
+
+<script>
+(function(){
+  const pages=[...document.querySelectorAll('.page')];const names=pages.map(p=>p.dataset.page);
+  const head=document.getElementById('sitehead');const drawer=document.getElementById('drawer');const ob=document.getElementById('menu-open');
+  const titles={home:'Postly Engines',about:'About · Postly Engines',engines:'Engines · Postly Engines',industries:'Industries · Postly Engines',work:'Work · Postly Engines',contact:'Contact · Postly Engines'};
+  let cur=null;
+  function show(){
+    let n=(location.hash||'#home').slice(1);if(n==='top')n='home';if(!names.includes(n))n='home';
+    drawer.hidden=true;ob.setAttribute('aria-expanded','false');document.body.style.overflow='';
+    if(n===cur){window.scrollTo(0,0);return;}
+    cur=n;pages.forEach(p=>p.hidden=p.dataset.page!==n);
+    document.querySelectorAll('.nav a,.drawer nav a').forEach(a=>{if(a.getAttribute('href')==='#'+n)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
+    window.scrollTo(0,0);onScroll();
+    if(n==='home'&&window.__heroResize)window.__heroResize();
+  }
+  function onScroll(){head.classList.toggle('solid',cur!=='home'||window.scrollY>window.innerHeight*.6);}
+  window.addEventListener('hashchange',show);window.addEventListener('scroll',onScroll,{passive:true});
+  ob.addEventListener('click',()=>{drawer.hidden=false;ob.setAttribute('aria-expanded','true');document.body.style.overflow='hidden';});
+  document.getElementById('menu-close').addEventListener('click',()=>{drawer.hidden=true;ob.setAttribute('aria-expanded','false');document.body.style.overflow='';});
+  drawer.addEventListener('click',e=>{if(e.target.closest('a')&&e.target.closest('a').getAttribute('href')===location.hash)show();});
+  show();
+})();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+const hero=document.querySelector('.hero');
+const canvas=document.getElementById('stage');
+const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $=id=>document.getElementById(id);
+const finalEl=$('final'),capEl=$('caption'),hudEl=$('hud'),tlEl=$('timeline'),flashEl=$('flash');
+const skipBtn=$('skip');
+const T_END=18.2;
+
+function noGL(){hero.classList.add('nogl');finalEl.classList.add('on');capEl.style.opacity=0;hudEl.style.opacity=0;tlEl.style.opacity=0;skipBtn.hidden=true;}
+if(!window.THREE){noGL();return;}
+let renderer;
+try{renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});}catch(e){noGL();return;}
+
+const C_CYAN=new THREE.Color(0x00E5FF),C_ICE=new THREE.Color(0x6AF2FF),C_DIM=new THREE.Color(0x1A5A86),BG=0x030714;
+renderer.setClearColor(BG,1);
+const scene=new THREE.Scene();
+scene.fog=new THREE.FogExp2(BG,0.026);
+const camera=new THREE.PerspectiveCamera(50,1,0.1,200);
+
+/* ---------- helpers ---------- */
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const seg=(t,a,b)=>clamp((t-a)/(b-a));
+const eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const eout=x=>1-Math.pow(1-x,3);
+const V=(x,y,z)=>new THREE.Vector3(x,y,z);
+function glowTex(stops){const c=document.createElement('canvas');c.width=c.height=128;const g=c.getContext('2d');const gr=g.createRadialGradient(64,64,0,64,64,64);stops.forEach(s=>gr.addColorStop(s[0],s[1]));g.fillStyle=gr;g.fillRect(0,0,128,128);const t=new THREE.CanvasTexture(c);return t;}
+const TEX_GLOW=glowTex([[0,'rgba(255,255,255,1)'],[.18,'rgba(160,250,255,.9)'],[.45,'rgba(0,229,255,.28)'],[1,'rgba(0,229,255,0)']]);
+const TEX_SOFT=glowTex([[0,'rgba(0,229,255,.55)'],[.5,'rgba(0,229,255,.12)'],[1,'rgba(0,229,255,0)']]);
+const TEX_BEAM=(()=>{const c=document.createElement('canvas');c.width=32;c.height=256;const g=c.getContext('2d');const gx=g.createLinearGradient(0,0,32,0);gx.addColorStop(0,'rgba(0,229,255,0)');gx.addColorStop(.5,'rgba(200,252,255,1)');gx.addColorStop(1,'rgba(0,229,255,0)');g.fillStyle=gx;g.fillRect(0,0,32,256);g.globalCompositeOperation='destination-in';const gy=g.createLinearGradient(0,0,0,256);gy.addColorStop(0,'rgba(0,0,0,0)');gy.addColorStop(.7,'rgba(0,0,0,1)');gy.addColorStop(1,'rgba(0,0,0,.6)');g.fillStyle=gy;g.fillRect(0,0,32,256);return new THREE.CanvasTexture(c);})();
+function sprite(tex,scale,opacity=1){const m=new THREE.SpriteMaterial({map:tex,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity});const s=new THREE.Sprite(m);s.scale.setScalar(scale);return s;}
+
+/* collect edges from many geometries into one LineSegments that "prints" bottom-up */
+function printed(geos,mat){
+  const segs=[];
+  geos.forEach(g=>{const e=new THREE.EdgesGeometry(g,24);const p=e.attributes.position.array;for(let i=0;i<p.length;i+=6)segs.push([p[i],p[i+1],p[i+2],p[i+3],p[i+4],p[i+5]]);e.dispose();g.dispose();});
+  segs.sort((a,b)=>Math.min(a[1],a[4])-Math.min(b[1],b[4]));
+  const arr=new Float32Array(segs.length*6);segs.forEach((s,i)=>arr.set(s,i*6));
+  const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(arr,3));
+  const ls=new THREE.LineSegments(geo,mat);ls.userData.count=segs.length*2;geo.setDrawRange(0,0);return ls;
+}
+function kit(){
+  const parts=[];
+  const put=(g,x,y,z,o={})=>{if(o.rx)g.rotateX(o.rx);if(o.rz)g.rotateZ(o.rz);if(o.ry)g.rotateY(o.ry);g.translate(x,y,z);parts.push(g);};
+  const k={parts,
+    box(w,h,d,x,y,z,o){const g=new THREE.BoxGeometry(w,h,d);g.translate(0,h/2,0);put(g,x,y,z,o);return k;},
+    cyl(rt,rb,h,x,y,z,seg=12,o){const g=new THREE.CylinderGeometry(rt,rb,h,seg,1);g.translate(0,h/2,0);put(g,x,y,z,o);return k;},
+    sph(r,x,y,z,ws=8,hs=6,half){const g=half?new THREE.SphereGeometry(r,ws,hs,0,Math.PI*2,0,Math.PI/2):new THREE.SphereGeometry(r,ws,hs);put(g,x,y,z);return k;},
+    tor(R,r,x,y,z,o,arc){const g=new THREE.TorusGeometry(R,r,5,14,arc||Math.PI*2);put(g,x,y,z,o);return k;},
+    shop(w,h,d){k.box(w,h,d,0,.26,0).box(w+.3,.12,d+.3,0,.26+h,0).box(.55,.85,.04,0,.26,d/2+.02).box(w*.32,.5,.04,-w*.27,.65,d/2+.02).box(w*.32,.5,.04,w*.27,.65,d/2+.02);return k;}
+  };
+  k.box(3.6,.16,3.6,0,0,0).box(3.2,.08,3.2,0,.16,0);
+  return k;
+}
+const BUILDERS=[
+  ['Restaurants','Table 7 → kitchen · 0.8s',k=>{k.shop(2.6,1.5,2.0).box(2.6,.05,.75,0,1.25,1.25,{rx:.35}).cyl(.8,.8,.06,0,1.88,0,16).sph(.58,0,1.94,0,12,5,true).sph(.08,0,2.52,0,6,4);}],
+  ['Cafés & coffee','QR order → bar screen',k=>{k.shop(2.4,1.2,2.0).cyl(.95,.95,.05,0,1.58,0,16).cyl(.62,.46,.9,0,1.63,0,14).tor(.26,.06,.66,2.08,0,{});}],
+  ['Bakeries','Fresh batch · stock synced',k=>{k.shop(2.4,1.0,2.0).cyl(.95,.95,.38,0,1.38,0,16).cyl(.7,.7,.34,0,1.76,0,14).cyl(.45,.45,.3,0,2.1,0,12).sph(.1,0,2.5,0,6,4);}],
+  ['Pharmacies','Batch & expiry tracked',k=>{k.shop(2.4,1.6,2.0).box(.36,1.15,.22,0,1.98,0).box(1.15,.36,.22,0,2.38,0).tor(.85,.03,0,2.55,0,{});}],
+  ['Salons & beauty','Booking 4:30 · confirmed',k=>{k.shop(2.4,1.1,2.0).cyl(.38,.44,.06,0,1.48,0,12).cyl(.06,.06,.36,0,1.54,0,8).box(.8,.16,.72,0,1.9,0).box(.8,.8,.12,0,1.9,-.36).box(.1,.1,.66,-.44,2.12,0).box(.1,.1,.66,.44,2.12,0).tor(.52,.04,0,2.75,-.95,{});}],
+  ['Snooker clubs','Table 3 · timer running',k=>{[[-1,-.55],[1,-.55],[-1,.55],[1,.55]].forEach(p=>k.cyl(.08,.06,.72,p[0],.24,p[1],8));k.box(2.6,.16,1.5,0,.96,0).box(2.7,.12,.12,0,1.12,.72).box(2.7,.12,.12,0,1.12,-.72).box(.12,.12,1.5,1.3,1.12,0).box(.12,.12,1.5,-1.3,1.12,0);[[.4,0],[.58,.1],[.58,-.1],[.76,.2],[.76,0],[.76,-.2],[-.7,0]].forEach(p=>k.sph(.08,p[0],1.2,p[1],6,4));k.cyl(.02,.035,2.2,-1.2,1.3,.1,6,{rz:Math.PI/2-0.08});k.box(1.8,.08,.45,0,2.7,0);}],
+  ['Grocery','Low stock → reorder',k=>{[-.65,.65].forEach(z=>{[0,1,2].forEach(l=>k.box(2.7,.05,.55,0,.26+l*.55,z));k.box(.06,1.45,.55,-1.35,.26,z).box(.06,1.45,.55,1.35,.26,z);[[-.9,0],[-.3,0],[.4,0],[1.0,0],[-.7,1],[.1,1],[.8,1],[-1.0,2],[-.2,2],[.6,2]].forEach((p,i)=>k.box(.32,.26+(i%3)*.06,.3,p[0],.31+p[1]*.55,z));});}],
+  ['Vape shops','Sale logged · stock −1',k=>{k.shop(2.2,1.3,1.8).box(.36,1.25,.22,-.3,1.68,0).cyl(.07,.1,.25,-.3,2.93,0,8).sph(.36,.15,3.05,.1,7,5).sph(.46,.6,3.25,0,7,5).sph(.3,1.0,3.05,.1,7,5);}]
+];
+
+/* ---------- world ---------- */
+const world=new THREE.Group();scene.add(world);
+
+// ground grid
+const gridMat=new THREE.LineBasicMaterial({color:0x2B4C8C,transparent:true,opacity:0});
+{const p=[];for(let i=-40;i<=40;i+=2){p.push(i,0,-40,i,0,40,-40,0,i,40,0,i);}const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));world.add(new THREE.LineSegments(g,gridMat));}
+
+// dust
+const dust=(()=>{const n=260,p=new Float32Array(n*3);for(let i=0;i<n;i++){p[i*3]=(Math.random()-.5)*60;p[i*3+1]=Math.random()*14;p[i*3+2]=(Math.random()-.5)*60;}const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(p,3));const m=new THREE.PointsMaterial({color:0x6AF2FF,size:.07,transparent:true,opacity:0,depthWrite:false});const pts=new THREE.Points(g,m);world.add(pts);return pts;})();
+
+function ring(r,seg,mat,y=0.02){const p=[];for(let i=0;i<=seg;i++){const a=i/seg*Math.PI*2;p.push(Math.sin(a)*r,y,Math.cos(a)*r);}const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));return new THREE.Line(g,mat);}
+
+// engine pedestal
+const pedMat=new THREE.LineBasicMaterial({color:0x6AF2FF,transparent:true,opacity:0});
+const pedestal=printed([(()=>{const g=new THREE.CylinderGeometry(2.4,2.7,.32,6,1);g.translate(0,.16,0);return g;})(),(()=>{const g=new THREE.CylinderGeometry(1.9,1.9,.1,6,1);g.translate(0,.36,0);return g;})()],pedMat);
+world.add(pedestal);
+const ringMatA=new THREE.LineDashedMaterial({color:0x00E5FF,dashSize:.3,gapSize:.25,transparent:true,opacity:0});
+const ringA=ring(3.6,90,ringMatA);ringA.computeLineDistances();world.add(ringA);
+const ringMatB=new THREE.LineBasicMaterial({color:0x2B6FA8,transparent:true,opacity:0});
+const ringB=ring(4.6,90,ringMatB);world.add(ringB);
+const baseGlow=sprite(TEX_SOFT,9,0);baseGlow.position.set(0,.4,0);world.add(baseGlow);
+
+/* ---------- logo (the engine) ---------- */
+const S=0.024,LIFT=.45;
+const W=(sx,sy,z=0)=>V((sx-94.5)*S,(166-sy)*S+LIFT,z);
+const logo=new THREE.Group();logo.rotation.order='YXZ';world.add(logo);
+function rrPts(x,y,w,h,r){const pts=[],n=10;const cs=[[x+w-r,y+r,-Math.PI/2],[x+w-r,y+h-r,0],[x+r,y+h-r,Math.PI/2],[x+r,y+r,Math.PI]];
+  pts.push(W(x+w/2,y));cs.forEach(c=>{for(let i=0;i<=n;i++){const a=c[2]+i/n*Math.PI/2;pts.push(W(c[0]+Math.cos(a)*r,c[1]+Math.sin(a)*r));}});pts.push(W(x+w/2-.01,y));return pts;}
+const cylCurve=new THREE.CatmullRomCurve3(rrPts(42,38,32,128,10),false,'catmullrom',0.1);
+const bowlPts=[];for(let i=0;i<=10;i++)bowlPts.push(W(74+i*3.6,50));for(let i=1;i<=32;i++){const a=-Math.PI/2+i/32*Math.PI;bowlPts.push(W(110+37*Math.cos(a),87+37*Math.sin(a)));}for(let i=1;i<=10;i++)bowlPts.push(W(110-i*3.6,124));
+const bowlCurve=new THREE.CatmullRomCurve3(bowlPts,false,'catmullrom',0.1);
+const TS_C=160,TS_B=140,RS=10;
+const cylMat=new THREE.MeshBasicMaterial({color:0x6AF2FF});
+const bowlMat=new THREE.MeshBasicMaterial({color:0x00E5FF});
+const cylMesh=new THREE.Mesh(new THREE.TubeGeometry(cylCurve,TS_C,3.6*S,RS,false),cylMat);
+const bowlMesh=new THREE.Mesh(new THREE.TubeGeometry(bowlCurve,TS_B,8*S,RS,false),bowlMat);
+cylMesh.geometry.setDrawRange(0,0);bowlMesh.geometry.setDrawRange(0,0);
+logo.add(cylMesh,bowlMesh);
+const capA=new THREE.Mesh(new THREE.SphereGeometry(8*S,12,8),bowlMat),capB=capA.clone();capA.position.copy(W(74,50));capB.position.copy(W(74,124));capA.visible=capB.visible=false;logo.add(capA,capB);
+// wire "ghost" outline behind for engineering depth
+const ghostMat=new THREE.LineBasicMaterial({color:0x2B6FA8,transparent:true,opacity:0});
+{const g1=new THREE.BufferGeometry().setFromPoints(cylCurve.getPoints(80).map(p=>p.clone().setZ(-.35)));const g2=new THREE.BufferGeometry().setFromPoints(bowlCurve.getPoints(80).map(p=>p.clone().setZ(-.35)));logo.add(new THREE.Line(g1,ghostMat),new THREE.Line(g2,ghostMat));}
+// piston
+const piston=new THREE.Group();
+const pMat=new THREE.MeshBasicMaterial({color:0x00E5FF,transparent:true,opacity:0});
+const pBody=new THREE.Mesh(new THREE.BoxGeometry(14*S,44*S,12*S),pMat);
+const pRing=new THREE.Mesh(new THREE.BoxGeometry(22*S,4*S,16*S),new THREE.MeshBasicMaterial({color:0x6AF2FF,transparent:true,opacity:0}));pRing.position.y=(72-60)*S;
+piston.add(pBody,pRing);piston.position.copy(W(58,72));logo.add(piston);
+const pistonBase=piston.position.y;
+// orbiting spark on bowl
+const orbiter=sprite(TEX_GLOW,.55,0);logo.add(orbiter);
+const orbCore=new THREE.Mesh(new THREE.SphereGeometry(5*S,10,8),new THREE.MeshBasicMaterial({color:0xE8FDFF,transparent:true,opacity:0}));logo.add(orbCore);
+// ignition spark (the orb)
+const sparkPos=W(58,28);
+const spark=sprite(TEX_GLOW,.1,1);spark.position.copy(sparkPos);logo.add(spark);
+const sparkHalo=sprite(TEX_SOFT,1,0);sparkHalo.position.copy(sparkPos);logo.add(sparkHalo);
+const logoGlow=sprite(TEX_SOFT,5,0);logoGlow.position.copy(W(94,100,-.4));logo.add(logoGlow);
+
+/* inner orbit: four modules */
+const MODS=['POS','Kitchen','Stock','Owner'];
+const modules=MODS.map((n,i)=>{const m=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.OctahedronGeometry(.32,0)),new THREE.LineBasicMaterial({color:0x6AF2FF,transparent:true,opacity:0}));const g=sprite(TEX_GLOW,.5,0);m.add(g);world.add(m);return m;});
+
+/* ---------- businesses + conduits ---------- */
+const R=12.5,N=BUILDERS.length,A0=0.38,STEP=0.95,D0=5.6;
+const angOf=i=>A0+i*Math.PI*2/N;
+const posOn=(a,r)=>V(Math.sin(a)*r,0,Math.cos(a)*r);
+const biz=BUILDERS.map((b,i)=>{
+  const a=angOf(i),p=posOn(a,R);
+  const k=kit();b[2](k);
+  const mat=new THREE.LineBasicMaterial({color:C_DIM.clone(),transparent:true,opacity:.95});
+  const mesh=printed(k.parts,mat);
+  const grp=new THREE.Group();grp.position.copy(p);grp.rotation.y=a+Math.PI;grp.add(mesh);world.add(grp);
+  const baseRingMat=new THREE.LineBasicMaterial({color:0x00E5FF,transparent:true,opacity:0});
+  const br=ring(2.6,48,baseRingMat,.03);grp.add(br);
+  const beam=sprite(TEX_BEAM,1,0);beam.scale.set(1.1,11,1);beam.position.set(0,5.2,0);grp.add(beam);
+  const bglow=sprite(TEX_SOFT,6,0);bglow.position.set(0,.6,0);grp.add(bglow);
+  // conduit: a curving belt from the engine
+  const dir=posOn(a,1),tan=V(dir.z,0,-dir.x);
+  const c=new THREE.CubicBezierCurve3(dir.clone().multiplyScalar(2.6),dir.clone().multiplyScalar(5.5).add(tan.clone().multiplyScalar(2.2)),dir.clone().multiplyScalar(8.5).add(tan.clone().multiplyScalar(-1.6)),dir.clone().multiplyScalar(R-2.0));
+  const M=90,pts=c.getSpacedPoints(M);const railL=[],railR=[],ties=[],mid=[];
+  for(let j=0;j<=M;j++){const p0=pts[j],t=c.getTangentAt(j/M),n=V(t.z,0,-t.x).normalize().multiplyScalar(.32);
+    railL.push(p0.x+n.x,.05,p0.z+n.z);railR.push(p0.x-n.x,.05,p0.z-n.z);mid.push(p0.x,.06,p0.z);
+    if(j%3===0)ties.push(p0.x+n.x,.05,p0.z+n.z,p0.x-n.x,.05,p0.z-n.z);}
+  const mk=(arr,mat,Seg)=>{const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(arr,3));g.setDrawRange(0,0);const o=new (Seg?THREE.LineSegments:THREE.Line)(g,mat);world.add(o);return o;};
+  const railMat=new THREE.LineBasicMaterial({color:0x2B6FA8,transparent:true,opacity:.9});
+  const midMat=new THREE.LineBasicMaterial({color:0x00E5FF,transparent:true,opacity:.0});
+  const rl=mk(railL,railMat),rr=mk(railR,railMat),ti=mk(ties,railMat,true),md=mk(mid,midMat);
+  const pulses=[0,1,2].map(()=>{const s=sprite(TEX_GLOW,.6,0);world.add(s);return s;});
+  const tag=document.createElement('div');tag.className='tag';
+  tag.innerHTML='<div class="in"><span class="read">'+b[1]+'</span><span class="chip"><i>'+String(i+1).padStart(2,'0')+'</i>'+b[0]+'</span><span class="stem"></span></div>';
+  $('labels').appendChild(tag);
+  return {a,p,mesh,mat,grp,baseRingMat,beam,bglow,curve:c,rl,rr,ti,md,midMat,M,tiesCount:ties.length/3,pulses,tag,anchor:p.clone().setY(3.9),t0:D0+i*STEP};
+});
+const modTags=MODS.map(n=>{const d=document.createElement('div');d.className='tag tmod';d.innerHTML='<div class="in"><span class="chip">'+n+'</span></div>';$('labels').appendChild(d);return d;});
+
+// network ring linking all businesses
+const netMat=new THREE.LineDashedMaterial({color:0x00E5FF,dashSize:.5,gapSize:.35,transparent:true,opacity:0});
+const net=ring(R,160,netMat,.04);net.computeLineDistances();net.geometry.setDrawRange(0,0);world.add(net);
+
+/* ---------- camera choreography ---------- */
+let kf=1;
+function poseA(t){const e=eio(seg(t,0,1.8));return [sparkPos.clone().add(V(.15*e,-.05*e,2.4+.5*e)),sparkPos.clone()];}
+function poseB(){return [V(1.4,2.1,(camera.aspect>1.2?7.6:6.4)*kf),V(.1,1.95,0)];}
+function poseD(t){const i=(t-D0)/STEP;const th=A0+i*Math.PI*2/N+.62;const r=15.5+5*(kf-1),h=6.2+3.2*(kf-1);
+  const b=posOn(A0+i*Math.PI*2/N,R);return [V(Math.sin(th)*r,h,Math.cos(th)*r),b.multiplyScalar(.42).setY(.9)];}
+const thE=t=>A0+Math.PI*2+.62+(t-(D0+N*STEP))*0.07;
+function poseE(t){const th=thE(t);const r=13+3*(kf-1),h=21+9*(kf-1);return [V(Math.sin(th)*r,h,Math.cos(th)*r),V(0,0,0)];}
+function poseF(t){const th=thE(t);const r=17+5*(kf-1),h=13+9*(kf-1);return [V(Math.sin(th)*r,h,Math.cos(th)*r),V(0,0,0)];}
+const lerpPose=(a,b,u)=>[a[0].clone().lerp(b[0],u),a[1].clone().lerp(b[1],u)];
+const T_E=D0+N*STEP+.3,T_F=16.4;
+function pose(t){
+  if(t<1.8)return poseA(t);
+  if(t<3.6)return lerpPose(poseA(1.8),poseB(),eio(seg(t,1.8,3.6)));
+  if(t<D0+.2)return lerpPose(poseB(),poseD(t),eio(seg(t,3.6,D0+.2)));
+  if(t<T_E)return poseD(t);
+  if(t<T_F)return lerpPose(poseD(t),poseE(t),eio(seg(t,T_E,T_E+2.2)));
+  return lerpPose(poseE(t),poseF(t),eio(seg(t,T_F,T_F+2.2)));
+}
+
+/* ---------- captions ---------- */
+const CAPS=[
+  [0,'00','Standby','Every business runs on an engine.'],
+  [1.8,'01','Ignition','Meet the engine. Postly Engines.'],
+  [D0,'02','Connect','One engine powers every counter in town.'],
+  [T_E,'03','Run','Counter, kitchen, stock, staff and profit. All live.'],
+];
+let capIdx=-1;
+function setCap(t){let i=0;for(let j=0;j<CAPS.length;j++)if(t>=CAPS[j][0])i=j;if(i!==capIdx){capIdx=i;$('cap-n').textContent=CAPS[i][1];$('cap-k').textContent=CAPS[i][2];$('cap-p').textContent=CAPS[i][3];capEl.classList.remove('swap');void capEl.offsetWidth;capEl.classList.add('swap');}}
+{const tl=$('timeline');CAPS.slice(1).forEach(c=>{const d=document.createElement('span');d.className='tick';d.style.left=(c[0]/T_END*100)+'%';tl.appendChild(d);});}
+
+/* ---------- sizing ---------- */
+let w=1,h=1;
+function resize(){w=hero.clientWidth;h=hero.clientHeight;renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,w<700?2:1.75));renderer.setSize(w,h,false);camera.aspect=w/h;
+  kf=camera.aspect<1?Math.min(2.1,.62/camera.aspect+.35):1;camera.fov=camera.aspect<1?56:48;camera.updateProjectionMatrix();}
+window.addEventListener('resize',resize);resize();
+
+/* ---------- state ---------- */
+let t=reduce?T_END:0,last=performance.now(),phase=0,rpmS=0,running=true,inView=true;
+const pv=new THREE.Vector3();
+function placeTag(el,anchor,show,slim){
+  if(!show){if(el._s){el.style.opacity=0;el._s=0;}return;}
+  pv.copy(anchor).project(camera);
+  if(pv.z>1||Math.abs(pv.x)>1.15||Math.abs(pv.y)>1.15){el.style.opacity=0;el._s=0;return;}
+  el.style.transform='translate3d('+((pv.x+1)/2*w).toFixed(1)+'px,'+((1-pv.y)/2*h).toFixed(1)+'px,0)';
+  el.classList.toggle('slim',!!slim);if(!el._s){el.style.opacity=1;el._s=1;}
+}
+
+function update(dt){
+  // ---- spark / ignition
+  const grow=eout(seg(t,.2,1.7));
+  const flashU=seg(t,1.72,2.6);
+  const breathe=.85+.15*Math.sin(t*6);
+  spark.scale.setScalar(.05+.55*grow*breathe+(t>1.72?1.6*(1-eout(flashU)):0)*(t<2.6?1:0));
+  const sparkSettled=t>2.6;
+  if(sparkSettled){const pulse=.5+.5*Math.sin(phase*Math.PI*4);spark.scale.setScalar(.22+.22*pulse);}
+  sparkHalo.material.opacity=t<1.72?.6*grow:.35;sparkHalo.scale.setScalar(1.2+2*grow+(t>1.72&&t<2.6?6*(1-flashU):0));
+  flashEl.style.opacity=t>1.7&&t<2.7?(Math.max(0,1-seg(t,1.75,2.7))*(seg(t,1.7,1.78))*.9).toFixed(3):0;
+
+  // ---- logo build
+  const cU=eio(seg(t,1.85,3.0)),bU=eio(seg(t,2.2,3.4));
+  cylMesh.geometry.setDrawRange(0,Math.floor(cU*TS_C)*RS*6);
+  bowlMesh.geometry.setDrawRange(0,Math.floor(bU*TS_B)*RS*6);
+  capA.visible=bU>0.01;capB.visible=bU>.99;
+  const pU=seg(t,2.9,3.4);pMat.opacity=pU;pRing.material.opacity=pU*.75;
+  ghostMat.opacity=.6*seg(t,3,3.8);
+  logoGlow.material.opacity=.45*seg(t,2.2,3.6);
+  // piston revs with the number of businesses powered
+  let powered=0;biz.forEach(b=>{if(t>=b.t0+.6)powered++;});
+  const targetF=t<2.9?0:.55+1.15*powered/N;
+  rpmS+=(targetF-rpmS)*Math.min(1,dt*2.5);
+  if(!reduce)phase+=dt*rpmS;
+  const stroke=.5-.5*Math.cos(phase*Math.PI*2);
+  piston.position.y=pistonBase-58*S*stroke;
+  const ou=(phase%1+1)%1;const op=bowlCurve.getPointAt(ou);orbiter.position.copy(op).setZ(.05);orbCore.position.copy(op).setZ(.05);
+  orbiter.material.opacity=pU;orbCore.material.opacity=pU;
+
+  // ---- ground + pedestal
+  const gU=seg(t,3.4,5.4);
+  gridMat.opacity=.32*gU;dust.material.opacity=.55*gU;
+  pedestal.geometry.setDrawRange(0,Math.floor(eio(seg(t,3.3,4.4))*pedestal.userData.count/2)*2);pedMat.opacity=gU>0?.9:0;
+  ringMatA.opacity=.7*seg(t,4,5);ringA.rotation.y=t*.15;ringMatB.opacity=.6*seg(t,4.2,5.2);
+  baseGlow.material.opacity=.5*gU;
+
+  // ---- modules orbit
+  const mU=eout(seg(t,4.2,5.2));
+  modules.forEach((m,i)=>{const a=t*.35+i*Math.PI/2;m.position.set(Math.sin(a)*4.6,1.4+.25*Math.sin(t*1.3+i),Math.cos(a)*4.6);m.rotation.y=t*.8;m.rotation.x=t*.5;m.scale.setScalar(.01+mU);m.material.opacity=mU;m.children[0].material.opacity=.7*mU;});
+
+  // ---- businesses
+  biz.forEach((b,i)=>{
+    const cu=eio(seg(t,b.t0,b.t0+.55));
+    const nPts=b.M+1;const dr=Math.floor(cu*nPts);
+    b.rl.geometry.setDrawRange(0,dr);b.rr.geometry.setDrawRange(0,dr);b.md.geometry.setDrawRange(0,dr);
+    b.ti.geometry.setDrawRange(0,Math.floor(cu*b.tiesCount/2)*2);
+    b.midMat.opacity=cu>0?.85:0;
+    const bu=eio(seg(t,b.t0+.45,b.t0+1.05));
+    b.mesh.geometry.setDrawRange(0,Math.floor(bu*b.mesh.userData.count/2)*2);
+    const on=seg(t,b.t0+.6,b.t0+1.1);
+    b.mat.color.copy(C_DIM).lerp(C_ICE,on);
+    b.baseRingMat.opacity=.8*on;
+    const fl=seg(t,b.t0+.6,b.t0+1.6);b.beam.material.opacity=on>0?Math.pow(1-fl,2)*.9:0;
+    b.bglow.material.opacity=on*.35;
+    b.pulses.forEach((s,j)=>{
+      if(cu<1){s.material.opacity=j===0&&cu>0?1:0;if(j===0&&cu>0)s.position.copy(b.curve.getPointAt(cu)).setY(.12);s.scale.setScalar(.9);}
+      else{const u=((t*.42+j/3+i*.13)%1);s.position.copy(b.curve.getPointAt(u)).setY(.12);s.material.opacity=Math.sin(u*Math.PI)*.95;s.scale.setScalar(.55);}
+    });
+  });
+  netMat.opacity=.55*seg(t,T_E,T_E+.6);net.geometry.setDrawRange(0,Math.floor(eio(seg(t,T_E,T_E+1.6))*161));
+
+  // ---- camera (final frame slides the scene up on phones, right on wide screens)
+  const [cp,cl]=pose(t);camera.position.copy(cp);camera.lookAt(cl);
+  const fu=eio(seg(t,T_F,T_F+2.2));
+  if(fu>0){if(camera.aspect<1)camera.setViewOffset(w,h,0,h*.2*fu,w,h);else camera.setViewOffset(w,h,-w*.2*fu,0,w,h);}else camera.clearViewOffset();
+  // logo turns to face the camera once the camera leaves the close-up, and leans back for the overhead shots
+  const yawT=Math.atan2(camera.position.x,camera.position.z),hd=Math.hypot(camera.position.x,camera.position.z);
+  const elev=Math.atan2(camera.position.y-1.6,hd);
+  const fU=eio(seg(t,3.4,5.0));
+  logo.rotation.y=yawT*fU+(reduce?0:Math.sin(t*.5)*.12*fU);
+  logo.rotation.x=-Math.max(0,elev)*.55*fU;
+  logo.scale.setScalar(1+.45*eio(seg(t,T_E,T_E+2)));
+
+  // ---- labels
+  biz.forEach(b=>{const showD=t>=b.t0+.6&&t<b.t0+2.4&&t<T_E;const showE=t>=T_E+.4&&t<T_F+.6;placeTag(b.tag,b.anchor,showD||showE,showE);});
+  modules.forEach((m,i)=>{pv.copy(m.position).setY(m.position.y+.6);placeTag(modTags[i],pv.clone(),t>=T_E+.6&&t<T_F+.6);});
+
+  // ---- HUD + captions + final
+  $('h-t').textContent=Math.min(t,T_END).toFixed(1).padStart(4,'0');
+  $('h-rpm').textContent=Math.round(rpmS*2400).toLocaleString('en-US');
+  $('h-pw').textContent=powered+'/'+N;
+  setCap(t);
+  $('tl-fill').style.width=(clamp(t/T_END)*100)+'%';
+  const done=t>=T_F+.4;
+  finalEl.classList.toggle('on',done);hero.classList.toggle('done',done);
+  const o=done?0:1;capEl.style.opacity=o;tlEl.style.opacity=o;hudEl.style.opacity=done?.0:1;
+  skipBtn.textContent=done?'Replay':'Skip intro';
+}
+
+function frame(now){
+  const dt=Math.min(.05,(now-last)/1000);last=now;
+  if(running&&inView){if(!reduce)t+=dt;update(dt);renderer.render(scene,camera);}
+  requestAnimationFrame(frame);
+}
+skipBtn.addEventListener('click',()=>{if(t>=T_F+.4){t=0;phase=0;rpmS=0;capIdx=-1;}else{t=T_F+.5;}});
+window.__heroResize=resize;
+document.addEventListener('visibilitychange',()=>{running=!document.hidden;last=performance.now();});
+if('IntersectionObserver' in window){new IntersectionObserver(es=>{inView=es[0].isIntersecting;last=performance.now();},{threshold:0}).observe(hero);}
+if(reduce){update(0);}
+// test hook: allow jumping to a time with #t=…
+window.__seek=v=>{t=v;};
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
